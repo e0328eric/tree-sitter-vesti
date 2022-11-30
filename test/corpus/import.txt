@@ -1,0 +1,211 @@
+========================================================
+Simple import
+========================================================
+
+docclass article
+import kotex
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path))
+	(import
+		pkgs: (pkg_list
+			(package
+				name: (path)))))
+
+========================================================
+Import with several packages
+========================================================
+
+docclass article (a4paper)
+import { kotex, tikz }
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))))
+	(import
+		pkgs: (pkg_list
+			(package
+				name: (path))
+			(package
+				name: (path)))))
+
+========================================================
+Simple import with one argument
+========================================================
+
+docclass article (a4paper)
+import kotex (hangul)
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))))
+	(import
+		pkgs: (pkg_list
+			(package
+				name: (path)
+				param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))))))))
+
+========================================================
+Import with several packages with several arguments 1
+========================================================
+
+docclass article (a4paper)
+import { kotex (hangul), tikz (tcolorbox, foo, bar, baz) }
+ 
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))))
+    (import
+        pkgs: (pkg_list
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))))
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))))))))
+
+========================================================
+Import with several packages with several arguments 2
+========================================================
+
+docclass article (a4paper)
+import {
+	kotex (hangul),
+	geometry (a4paper, margin = 1.1in),
+	tikz (tcolorbox, foo, bar, baz)
+}
+ 
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))))
+    (import
+        pkgs: (pkg_list
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))))
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))
+                        value: (value
+                            (text
+                                word: (word))))))
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))))))))
+
+========================================================
+Import with several packages with several arguments 3
+========================================================
+
+docclass article (a4paper)
+import {
+	kotex (hangul),
+	geometry (a4paper, margin = 1.1in),
+	tikz (tcolorbox, foo, bar, baz),
+}
+ 
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))))
+    (import
+        pkgs: (pkg_list
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))))
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))
+                        value: (value
+                            (text
+                                word: (word))))))
+            (package
+                name: (path)
+                param: (paren_group_key_val
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word)))
+                    pair: (key_value_pair
+                        key: (text
+                            word: (word))))))))

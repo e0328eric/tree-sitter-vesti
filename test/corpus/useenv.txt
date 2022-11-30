@@ -1,0 +1,114 @@
+========================================================
+Simple useenv
+========================================================
+
+docclass article
+
+startdoc
+
+useenv center {
+    centering texts inside this bracket
+}
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path))
+    (document_start)
+    (environment
+        name: (text
+            word: (word))
+        body: (text
+            word: (word)
+            word: (word)
+            word: (word)
+            word: (word)
+            word: (word))))
+
+========================================================
+useenv with optional value
+========================================================
+
+docclass article
+
+startdoc
+
+useenv figure [ht] {
+    useenv tikzpicture {}
+}
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path))
+    (document_start)
+    (environment
+        name: (text
+            word: (word))
+        optional_arg: (sq_brace_group
+            (text
+                word: (word)))
+        body: (environment
+            name: (text
+                word: (word)))))
+
+========================================================
+useenv with necessary values
+========================================================
+
+docclass article
+
+startdoc
+
+useenv table [ht] {
+    useenv tabular (|l|l|l|p{5cm}|) {
+        a & b & c & d \\
+        a & b & c & d \\
+    }
+}
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path))
+    (document_start)
+    (environment
+        name: (text
+            word: (word))
+        optional_arg: (sq_brace_group
+            (text
+                word: (word)))
+        body: (environment
+            name: (text
+                word: (word))
+            necessary_arg: (paren_group
+                (text
+                    word: (word))
+                (brace_group
+                    (text
+                        word: (word)))
+                (text
+                    word: (operator)))
+            body: (text
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word))
+            body: (command
+                command: (command_name))
+            body: (text
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word)
+                word: (word))
+            body: (command
+                command: (command_name)))))

@@ -1,0 +1,68 @@
+========================================================
+example 001
+========================================================
+
+docclass article (a4paper, 10pt)
+
+import { amsmath, amssymb, amsthm }
+import tikz
+
+startdoc
+
+Hello, World!
+
+useenv thm {
+	This is a document!
+	useenv itemize [item = (\alph*)] {
+		foo, bar
+	}
+}
+
+--------------------------------------------------------
+
+(source_file
+    (docclass
+        name: (path)
+        param: (paren_group_text_list
+            text: (text
+                word: (word))
+            text: (text
+                word: (word))))
+    (import
+        pkgs: (pkg_list
+            (package
+                name: (path))
+            (package
+                name: (path))
+            (package
+                name: (path))))
+    (import
+        pkgs: (pkg_list
+            (package
+                name: (path))))
+    (document_start)
+    (text
+        word: (word))
+    (text
+        word: (word))
+    (environment
+        name: (text
+            word: (word))
+        body: (text
+            word: (word)
+            word: (word)
+            word: (word)
+            word: (word))
+        body: (environment
+            name: (text
+                word: (word))
+            optional_arg: (sq_brace_group
+                (text
+                    word: (word))
+                (paren_group
+                    (command
+                        command: (command_name))))
+            body: (text
+                word: (word))
+            body: (text
+                word: (word)))))

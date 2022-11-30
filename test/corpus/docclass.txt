@@ -1,0 +1,91 @@
+========================================================
+Simple docclass
+========================================================
+
+docclass article
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)))
+
+========================================================
+Docclass with single argument
+========================================================
+
+docclass article (a4paper)
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word)))))
+
+========================================================
+Docclass with several argument1
+========================================================
+
+docclass coprime (a4paper, korean, geometry)
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))
+            text: (text
+                word: (word))
+            text: (text
+                word: (word)))))
+
+========================================================
+Docclass with several argument2
+========================================================
+
+docclass coprime (
+	a4paper,
+	korean, 
+	geometry
+)
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))
+            text: (text
+                word: (word))
+            text: (text
+                word: (word)))))
+
+========================================================
+Docclass with several argument3
+========================================================
+
+docclass coprime (
+	a4paper,
+	korean, 
+	geometry,
+)
+
+--------------------------------------------------------
+
+(source_file
+	(docclass
+		name: (path)
+		param: (paren_group_text_list
+            text: (text
+                word: (word))
+            text: (text
+                word: (word))
+            text: (text
+                word: (word)))))
