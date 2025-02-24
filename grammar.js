@@ -23,6 +23,7 @@ module.exports = grammar({
         $.importmod_decl,
         $.importfile_decl,
         $.importves_decl,
+        $.getfp_decl,
         $.useenv_decl,
         $.begenv_decl,
         $.endenv_decl,
