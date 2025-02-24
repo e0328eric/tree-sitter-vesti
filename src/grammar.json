@@ -392,10 +392,10 @@
             "value": "{"
           },
           {
-            "type": "REPEAT1",
+            "type": "REPEAT",
             "content": {
-              "type": "PATTERN",
-              "value": "[^}]"
+              "type": "SYMBOL",
+              "name": "statement"
             }
           },
           {

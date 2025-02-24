@@ -80,7 +80,7 @@ module.exports = grammar({
           $.env_name,
           repeat($.env_arg),
           "{",
-          repeat1(/[^}]/),
+          repeat($.statement),
           "}",
         ),
       ),
