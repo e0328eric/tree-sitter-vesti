@@ -1,0 +1,233 @@
+[
+  {
+    "type": "docclass_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_docclass",
+          "named": true
+        },
+        {
+          "type": "class_pkg_name",
+          "named": true
+        },
+        {
+          "type": "options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "env_arg",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "mandantory_arg",
+          "named": true
+        },
+        {
+          "type": "optional_arg",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "env_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_useenv",
+          "named": true
+        },
+        {
+          "type": "env_arg",
+          "named": true
+        },
+        {
+          "type": "env_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "mandantory_arg",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "multipkg_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_importpkg",
+          "named": true
+        },
+        {
+          "type": "class_pkg_name",
+          "named": true
+        },
+        {
+          "type": "options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "optional_arg",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "options",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "singlepkg_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_importpkg",
+          "named": true
+        },
+        {
+          "type": "class_pkg_name",
+          "named": true
+        },
+        {
+          "type": "options",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "docclass_decl",
+          "named": true
+        },
+        {
+          "type": "env_decl",
+          "named": true
+        },
+        {
+          "type": "multipkg_decl",
+          "named": true
+        },
+        {
+          "type": "singlepkg_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "vesti_content",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "\n",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": "KEYWORD_docclass",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_importpkg",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_useenv",
+    "named": true
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": "class_pkg_name",
+    "named": true
+  },
+  {
+    "type": "env_name",
+    "named": true
+  },
+  {
+    "type": "line_comment",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "multiline_comment",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  }
+]
