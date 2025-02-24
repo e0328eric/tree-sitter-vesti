@@ -20,7 +20,12 @@ module.exports = grammar({
         $.docclass_decl,
         $.singlepkg_decl,
         $.multipkg_decl,
-        $.env_decl,
+        $.importmod_decl,
+        $.importfile_decl,
+        $.importves_decl,
+        $.useenv_decl,
+        $.begenv_decl,
+        $.endenv_decl,
         $.luacode,
         $.latex_function,
         $.inline_math,
@@ -50,7 +55,12 @@ module.exports = grammar({
         "}",
       ),
 
-    env_decl: ($) =>
+    importmod_decl: ($) => seq($.KEYWORD_importmod, "(", $filepath, ")"),
+    importfile_decl: ($) => seq($.KEYWORD_importfile, "(", $filepath, ")"),
+    importves_decl: ($) => seq($.KEYWORD_imporves, "(", $filepath, ")"),
+    getfp_decl: ($) => seq($.KEYWORD_getfp, "(", $filepath, ")"),
+
+    useenv_decl: ($) =>
       seq(
         $.KEYWORD_useenv,
         $.env_name,
@@ -60,11 +70,25 @@ module.exports = grammar({
         "}",
       ),
 
+    begenv_decl: ($) =>
+      seq(
+        $.KEYWORD_begenv,
+        $.env_name,
+        repeat($.env_arg),
+        "{",
+      ),
+
+    endenv_decl: ($) =>
+      seq(
+        $.KEYWORD_endenv,
+        $.env_name,
+      ),
+
     luacode: ($) => seq($.KEYWORD_luacode, "{", $.luacode_contents, "}"),
     luacode_contents: ($) => repeat1(/[^}]/),
 
-    latex_function: ($) => seq("\\", $.letter, repeat(choice($.letter, "@"))),
-
+    latex_function: ($) => seq("\\", $.letter, $.latex_function_name),
+    latex_function_name: ($) => /[@\p{XID_Start}][@\p{XID_Continue}]*/,
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
 
@@ -79,6 +103,7 @@ module.exports = grammar({
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
+    filepath: ($) => token(/[\p{L}@/]+/),
 
     class_pkg_name: ($) => token(/[A-Za-z0-9-]+/),
 
@@ -88,6 +113,7 @@ module.exports = grammar({
     KEYWORD_importpkg: ($) => token("importpkg"),
     KEYWORD_importmod: ($) => token("importmod"),
     KEYWORD_importfile: ($) => token("importfile"),
+    KEYWORD_importves: ($) => token("importves"),
     KEYWORD_useltx3: ($) => token("useltx3"),
     KEYWORD_getfp: ($) => token("getfp"),
     KEYWORD_startdoc: ($) => token("startdoc"),
