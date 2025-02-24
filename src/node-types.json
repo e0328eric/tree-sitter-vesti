@@ -178,6 +178,10 @@
       "required": true,
       "types": [
         {
+          "type": "latex_function_arg",
+          "named": true
+        },
+        {
           "type": "latex_function_name",
           "named": true
         },
@@ -187,6 +191,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "latex_function_arg",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "luacode",

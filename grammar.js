@@ -94,8 +94,9 @@ module.exports = grammar({
     luacode_contents: ($) => repeat1(/[^}]/),
 
     latex_function: ($) =>
-      prec.right(1, seq("\\", $.letter, $.latex_function_name)),
+      seq("\\", $.letter, $.latex_function_name, repeat($.latex_function_arg)),
     latex_function_name: ($) => /[@\p{XID_Start}][@\p{XID_Continue}]*/,
+    latex_function_arg: ($) => prec.right(1, seq("{", /[^}]/, "}")),
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
 
