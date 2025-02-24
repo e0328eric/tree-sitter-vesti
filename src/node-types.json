@@ -429,10 +429,6 @@
         {
           "type": "env_name",
           "named": true
-        },
-        {
-          "type": "statement",
-          "named": true
         }
       ]
     }

@@ -368,7 +368,7 @@
     },
     "useenv_decl": {
       "type": "PREC_RIGHT",
-      "value": 2,
+      "value": 1,
       "content": {
         "type": "SEQ",
         "members": [
@@ -386,48 +386,33 @@
               "type": "SYMBOL",
               "name": "env_arg"
             }
-          },
-          {
-            "type": "STRING",
-            "value": "{"
-          },
-          {
-            "type": "REPEAT",
-            "content": {
-              "type": "SYMBOL",
-              "name": "statement"
-            }
-          },
-          {
-            "type": "STRING",
-            "value": "}"
           }
         ]
       }
     },
     "begenv_decl": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_begenv"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "env_name"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
             "type": "SYMBOL",
-            "name": "env_arg"
+            "name": "KEYWORD_begenv"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "env_name"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "env_arg"
+            }
           }
-        },
-        {
-          "type": "STRING",
-          "value": "{"
-        }
-      ]
+        ]
+      }
     },
     "endenv_decl": {
       "type": "SEQ",
