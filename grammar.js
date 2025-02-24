@@ -73,9 +73,12 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
 
     useenv_decl: ($) =>
-      prec.right(1, seq($.KEYWORD_useenv, $.env_name, repeat($.env_arg))),
+      prec.right(1, seq($.KEYWORD_useenv, $.env_name, repeat($.env_arg), "{")),
     begenv_decl: ($) =>
-      prec.right(1, seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg))),
+      prec.right(
+        1,
+        seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg), /(\r)?\n/),
+      ),
     endenv_decl: ($) => seq($.KEYWORD_endenv, $.env_name),
 
     luacode: ($) => seq($.KEYWORD_luacode, "{", $.luacode_contents, "}"),

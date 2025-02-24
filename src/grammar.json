@@ -386,6 +386,10 @@
               "type": "SYMBOL",
               "name": "env_arg"
             }
+          },
+          {
+            "type": "STRING",
+            "value": "{"
           }
         ]
       }
@@ -410,6 +414,10 @@
               "type": "SYMBOL",
               "name": "env_arg"
             }
+          },
+          {
+            "type": "PATTERN",
+            "value": "(\\r)?\\n"
           }
         ]
       }
