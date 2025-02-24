@@ -367,39 +367,43 @@
       }
     },
     "useenv_decl": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_useenv"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "env_name"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
+      "type": "PREC_RIGHT",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
             "type": "SYMBOL",
-            "name": "env_arg"
+            "name": "KEYWORD_useenv"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "env_name"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "env_arg"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "{"
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "PATTERN",
+              "value": "[^}]"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "}"
           }
-        },
-        {
-          "type": "STRING",
-          "value": "{"
-        },
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "PATTERN",
-            "value": "[^}]"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "}"
-        }
-      ]
+        ]
+      }
     },
     "begenv_decl": {
       "type": "SEQ",
@@ -467,21 +471,25 @@
       }
     },
     "latex_function": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "\\"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "letter"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "latex_function_name"
-        }
-      ]
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "\\"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "letter"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "latex_function_name"
+          }
+        ]
+      }
     },
     "latex_function_name": {
       "type": "PATTERN",
