@@ -1,4 +1,0 @@
-luacode {
-    function foo()
-    end
-}
