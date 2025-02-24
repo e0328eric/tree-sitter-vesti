@@ -155,7 +155,6 @@
   {
     "type": "vesti_content",
     "named": true,
-    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -214,13 +213,11 @@
   },
   {
     "type": "line_comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "multiline_comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "{",
