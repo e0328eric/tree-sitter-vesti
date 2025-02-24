@@ -1,5 +1,10 @@
 [
   {
+    "type": "display_math",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "docclass_decl",
     "named": true,
     "fields": {},
@@ -63,6 +68,50 @@
         }
       ]
     }
+  },
+  {
+    "type": "inline_math",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "latex_function",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "letter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "luacode",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_luacode",
+          "named": true
+        },
+        {
+          "type": "luacode_contents",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "luacode_contents",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "mandantory_arg",
@@ -134,11 +183,55 @@
       "required": true,
       "types": [
         {
+          "type": "KEYWORD_ltx3off",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_ltx3on",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_makeatletter",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_makeatother",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_nonstopmode",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_startdoc",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_useltx3",
+          "named": true
+        },
+        {
+          "type": "display_math",
+          "named": true
+        },
+        {
           "type": "docclass_decl",
           "named": true
         },
         {
           "type": "env_decl",
+          "named": true
+        },
+        {
+          "type": "inline_math",
+          "named": true
+        },
+        {
+          "type": "latex_function",
+          "named": true
+        },
+        {
+          "type": "luacode",
           "named": true
         },
         {
@@ -172,6 +265,14 @@
     "named": false
   },
   {
+    "type": "$",
+    "named": false
+  },
+  {
+    "type": "$$",
+    "named": false
+  },
+  {
     "type": "(",
     "named": false
   },
@@ -184,6 +285,10 @@
     "named": false
   },
   {
+    "type": "@",
+    "named": false
+  },
+  {
     "type": "KEYWORD_docclass",
     "named": true
   },
@@ -192,11 +297,47 @@
     "named": true
   },
   {
+    "type": "KEYWORD_ltx3off",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_ltx3on",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_luacode",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_makeatletter",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_makeatother",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_nonstopmode",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_startdoc",
+    "named": true
+  },
+  {
     "type": "KEYWORD_useenv",
     "named": true
   },
   {
+    "type": "KEYWORD_useltx3",
+    "named": true
+  },
+  {
     "type": "[",
+    "named": false
+  },
+  {
+    "type": "\\",
     "named": false
   },
   {
@@ -209,6 +350,10 @@
   },
   {
     "type": "env_name",
+    "named": true
+  },
+  {
+    "type": "letter",
     "named": true
   },
   {

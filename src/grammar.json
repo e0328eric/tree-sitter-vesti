@@ -26,6 +26,50 @@
         {
           "type": "SYMBOL",
           "name": "env_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "latex_function"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "inline_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "display_math"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_useltx3"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_startdoc"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_makeatletter"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_makeatother"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_ltx3on"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_ltx3off"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_nonstopmode"
         }
       ]
     },
@@ -221,6 +265,103 @@
         }
       ]
     },
+    "luacode": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_luacode"
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "luacode_contents"
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "luacode_contents": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "PATTERN",
+        "value": "[^}]"
+      }
+    },
+    "latex_function": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "letter"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "letter"
+              },
+              {
+                "type": "STRING",
+                "value": "@"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "inline_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "$"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^$]"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "$"
+        }
+      ]
+    },
+    "display_math": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "$$"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^$]"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "$$"
+        }
+      ]
+    },
     "options": {
       "type": "SEQ",
       "members": [
@@ -349,11 +490,102 @@
         "value": "importpkg"
       }
     },
+    "KEYWORD_importmod": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "importmod"
+      }
+    },
+    "KEYWORD_importfile": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "importfile"
+      }
+    },
+    "KEYWORD_useltx3": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "useltx3"
+      }
+    },
+    "KEYWORD_getfp": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "getfp"
+      }
+    },
+    "KEYWORD_startdoc": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "startdoc"
+      }
+    },
     "KEYWORD_useenv": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
         "value": "useenv"
+      }
+    },
+    "KEYWORD_begenv": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "begenv"
+      }
+    },
+    "KEYWORD_endenv": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "endenv"
+      }
+    },
+    "KEYWORD_makeatletter": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "makeatletter"
+      }
+    },
+    "KEYWORD_makeatother": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "makeatother"
+      }
+    },
+    "KEYWORD_ltx3on": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "ltx3on"
+      }
+    },
+    "KEYWORD_ltx3off": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "ltx3off"
+      }
+    },
+    "KEYWORD_nonstopmode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "nonstopmode"
+      }
+    },
+    "KEYWORD_luacode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "luacode"
       }
     },
     "digit": {

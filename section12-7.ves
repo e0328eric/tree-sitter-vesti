@@ -1,0 +1,144 @@
+In this section in the framework of Section 6 we investigate smoothness
+properties of the Green's functions.
+
+\subsubsection{Differentiability of $G$ and estimates of its derivatives}
+Our first goal is to show that outside the origin $G$ coincides with a smooth
+function.
+
+useenv thm { \label{thm:12.7.1}
+    In $\R^d--\{0\}$ the distribution $G(x)$ coincides with an infinitely
+    differentiable function denoted in a common abuse of notation again by
+    $G(x)$. For any multiindex $\alpha$ and $n>0$ we have
+    $$
+        |D^\alpha G(x)| = o(|x|^{-n})
+    $$
+    as $|x| -> oo$. Furthermore, for any multiindices $\alpha$ and $\beta$ such
+    that
+    useenv equation { \label{eq:12.7.1.1}
+        \mu + |\beta| > d + |\alpha|
+    }
+    in the sense of distributions we have
+    useenv equation { \label{eq:12.7.1.2}
+        x^\beta D^\alpha G(x) = {i^{|\alpha|+|\beta|}//(2\pi)^d}
+        \int_{\R^d}e^{ix\cdot\xi}D^\beta?[{\xi^\alpha // \sigma(\xi)}]?d\xi,
+    }
+    where the right hand side is a bounded and continuous function.
+    \proof
+    First we prove that both parts of \cref{eq:12.7.1.2} coincides as
+    distributions and the right hand side of \cref{eq:12.7.1.2} is a bounded and
+    continuous function. By \Cref{lemma:12.6.2} in the sense of distributions
+    useenv equation { \label{eq:12.7.1.3}
+        {i^{|\alpha|+|\beta|}//(2\pi)^d}
+        \int_{|\xi|<=R}e^{ix\cdot\xi}D^\beta[\xi^\alpha\sigma^{-1}(\xi)]d\xi
+        -> x^\beta D^\alpha G(x)
+    }
+    as $R->oo$. Next, observe that $\xi^\alpha\sigma^{-1}$ is a symbol of order
+    $|\alpha|-\mu$, and hence
+    $$
+        |D^\beta[\xi^\alpha\sigma^{-1}]|
+        <= N(1+|\xi|^2)^{(|\alpha|-\mu-|\beta|)/2}.
+    $$
+    Here the right hand side lies in $L_1$ because of \cref{eq:12.7.1.1},
+    hence the left hand side of \cref{eq:12.7.1.3} \it{uniformly} on
+    $\R^d$ converges to the right hand side of \cref{eq:12.7.1.2}. Indeed,
+    $$
+        \sup_{x\in\R^d} ?|
+        {i^{|\alpha|+|\beta|}//(2\pi)^d}
+        ?(\int_{|\xi|<=R}e^{ix\cdot\xi}D^\beta[\xi^\alpha\sigma^{-1}(\xi)]d\xi
+        - \int_{\R^d}e^{ix\cdot\xi}D^\beta[\xi^\alpha\sigma^{-1}(\xi)]d\xi
+        )?|?
+        <= {1//(2\pi)^d}\int_{|\xi|>R}|D^\beta[\xi^\alpha\sigma^{-1}]|d\xi
+        -> 0
+    $$
+    as $R->oo$. Particularly, the right hand side of \cref{eq:12.7.1.2} is
+    bounded and continuous.
+    The uniform convergence implies the convergence in the sense of
+    distributions by the dominated convergence theorem, and this yields
+    \cref{eq:12.7.1.2}. We have proved the third assertion of the theorem.
+
+    Next, for any integer $r=0,1,2,...$ the function $|x|^{2r}$ is a polynomial
+    in $x$. It follows that if $\mu+2r > d + |\alpha|$, then
+    useenv equation { \label{eq:12.7.1.4}
+        |x|^{2r}D^\alpha G(x) = {i^{|\alpha|}//(2\pi)^d}
+        \int_{\R^d}e^{ix\cdot\xi}(-\Delta)^r[\xi^\alpha\sigma^{-1}(\xi)]d\xi,
+    }
+    where the right hand side is bounded and continuous.\footnote{
+        We already proved this at the begining of this proof.
+    } Since we can take $r$ as large as we want, outside the origin the
+    distributions $D^\alpha G$ coincide with continuous functions for any
+    $\alpha$. By using \Cref{exe:12.5.2}, we conclude that the distribution $G$
+    coincides outside the origin with an infinitely differentiable function.
+    That $|D^\alpha G(x)|=o(|x|^{-2r})$ as $|x| ->oo$ for any $r>0$ follows from
+    \cref{eq:12.7.1.4} and the Riemann-Lebesgue lemma since
+    $(-\Delta)^r[\xi^\alpha\sigma^{-1}(\xi)]\in L_1$. This proves the theorem.
+    \proved
+}
+
+useenv coro { \label{coro:12.7.2}
+    If $L$ is a differential operator, then $LG(x) = 0$ for $|x|!=0$ in the
+    usual rather than generalized sense.
+    \proof
+    First of all, as $G$ is the Green's function of $L$ and $L$ is a
+    differential operator, we have for every $\phi\in C_0^oo$ that
+    $$
+        L(G * \phi)  = (LG) * \phi.
+    $$
+    By \Cref{thm:12.7.1}, $LG$ is infinitely differential function on
+    $\R^d--\{0\}$. As every singleton is Lebesgue measure zero, we can treat
+    $LG$ a $L_{1,"loc"}$ function. Fix $r>0$ and take $\phi\in C_0^oo$ such that
+    $\phi=0$ on $B[0,r]$. Then we have
+    $$
+        0 = (LG) * \phi(0) = \int_{\R^d} (LG)(x)\bar\phi(-x)dx,
+    $$
+    and thus $LG = 0$ (a.e.) on $\R^d--B[0,r]$ as $\phi$ is arbitrary.
+    Since $r>0$ is arbitrary, this yields to be $LG(x)=0$ for $|x|!=0$ (a.e.).
+    Now we can remove the term ``(a.e.)" because $LG$ is continuous except zero.
+    \proved
+}
+
+We generalize this corollary in \Cref{thm:13.1.7}.
+
+useenv exec { \label{exe:12.7.3}
+    By using \Cref{exe:12.4.5} show that for $\mu+|\beta|>d+|\alpha|$ the right
+    hand side of \cref{eq:12.7.1.2} is dominated by a constant depending only on
+    $d$, $|\alpha|$, $|\beta|$, $\mu$, $N_{|\beta|}(\sigma,\mu)$, and
+    $\kappa(\sigma)$.
+    \proof
+    It is easy to check that
+    useenv align* {
+        |D^\beta[\xi^\alpha\sigma^{-1}(\xi)]|
+        &<= N^\beta(\cdot^\alpha\sigma^{-1},
+        |\alpha|-\mu)(1+|\xi|)^{|\alpha|-\mu-|\beta|} \\
+        &<= N_{|\beta|}(\cdot^\alpha\sigma^{-1},
+        |\alpha|-\mu)(1+|\xi|)^{|\alpha|-\mu-|\beta|} \\
+        &<= N(|\beta|,d)
+        N_{|\beta|}(\cdot^\alpha,|\alpha|)N_{|\beta|}(\sigma^{-1},-\mu)
+        (1+|\xi|)^{|\alpha|-\mu-|\beta|} \\
+        &<= N(|\beta|,d, N_{|\beta|}(\sigma,\mu), \kappa(\sigma))
+        N_{|\beta|}(\cdot^\alpha,|\alpha|) (1+|\xi|)^{|\alpha|-\mu-|\beta|} \\
+        &<= N(|\alpha|,|\beta|,d, N_{|\beta|}(\sigma,\mu), \kappa(\sigma))
+        (1+|\xi|)^{|\alpha|-\mu-|\beta|}.
+    }
+    Since $|\alpha|-\mu-|\beta|< -d$, we have
+    useenv align* {
+        "(RHS of \cref{eq:12.7.1.2})"
+        &<= N(|\alpha|,|\beta|,d, N_{|\beta|}(\sigma,\mu), \kappa(\sigma))
+        \int_{\R^d} |D^\beta[\xi^\alpha\sigma^{-1}(\xi)]|d\xi \\
+        &<= N(|\alpha|,|\beta|,d, N_{|\beta|}(\sigma,\mu), \kappa(\sigma))
+        \int_{\R^d} (1+|\xi|)^{|\alpha|-\mu-|\beta|}d\xi \\
+        &<= N(|\alpha|,|\beta|, d, \mu, N_{|\beta|}(\sigma,\mu),
+        \kappa(\sigma)).
+    }
+    This proves the exercise. \proved
+}
+
+The following result on sharp estimates of $G(x)$ and its derivatives near zero
+plays an important role in many situations. It shows that if $d > \mu$, the the
+behavior of $G$ and its derivatives near zero is the same as for the function
+$1/|x|^{d-\mu}$. It also shows that in the general case if $|\alpha|=\mu$ (so
+that $\mu$ is an integer), then the kernel $K(x):=D^\alpha G(x)$ satisfies
+$$
+    |K(x)| <= {N // |x|^d},\quad |D_jK(x)| <= {N//|x|^{d+1}}
+$$
+for any $j=1,2,...,d$.
+
