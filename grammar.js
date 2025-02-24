@@ -73,13 +73,16 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
 
     useenv_decl: ($) =>
-      seq(
-        $.KEYWORD_useenv,
-        $.env_name,
-        repeat($.env_arg),
-        "{",
-        repeat1(/[^}]/),
-        "}",
+      prec.right(
+        2,
+        seq(
+          $.KEYWORD_useenv,
+          $.env_name,
+          repeat($.env_arg),
+          "{",
+          repeat1(/[^}]/),
+          "}",
+        ),
       ),
 
     begenv_decl: ($) =>
@@ -90,7 +93,8 @@ module.exports = grammar({
     luacode: ($) => seq($.KEYWORD_luacode, "{", $.luacode_contents, "}"),
     luacode_contents: ($) => repeat1(/[^}]/),
 
-    latex_function: ($) => seq("\\", $.letter, $.latex_function_name),
+    latex_function: ($) =>
+      prec.right(1, seq("\\", $.letter, $.latex_function_name)),
     latex_function_name: ($) => /[@\p{XID_Start}][@\p{XID_Continue}]*/,
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
