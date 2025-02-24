@@ -1,0 +1,62 @@
+We have already used the Fourier transform in Chapter 1. Here we will use it
+more systematically. Therefore, we recall some basics facts.
+
+For a function $g(x)$ given on $\R^d$ its Fourier transform $\Fc(g)=\hat g$ is
+defined by the formula
+$$
+    \Fc(g)(\xi) = \hat g(\xi) = c_d\int_{\R^d}e^{-ix\cdot\xi}g(x)dx,
+    \quad c_d = {1//(2\pi)^{d/2}}.
+$$
+By $C_0^oo=C_0^oo(\R^d)$ we denote the space of all infinitely differentiable
+complex-valued functions on $\R^d$ with compact support.
+Spaces $L_p$ are now spaces of complex-valued functions; in particular, $L_2$ is
+the Hilbert space of square summable functions with the inner product
+useenv equation { \label{eq:12.0.0.1}
+    (f,g) = \int_{\R^d}f\bar g dx.
+}
+Generally we use notation \cref{eq:12.0.0.1} each time when $|fg|\in L_1$.
+
+We need the following facts.
+useenv itemize {
+    \item If $g\in L_1$, then $\hat g$ is well-defined, continuous, and lies in
+    $L_oo$: $||\hat g||_{L_oo}<=c_d||g||_{L_1}$. Furthermore, if $g\in L_1$ and
+    $\hat g = 0$, then $g = 0$ (a.e.) because of the Fourier inversion theorem.
+
+    \item If $g\in C_0^oo$, then, for any multiindex $\alpha$,
+    $$
+        D^\alpha\hat g(\xi) = (-i)^{|\alpha|}\Fc(\cdot^\alpha g)(\xi),\quad
+        (i\xi)^\alpha\hat g(\xi) = \Fc(D^\alpha g)(\xi),
+    $$
+    which implies, in particular, that $\hat g->0$ faster than $|\xi|^{-n}$ for
+    any $n>0$ as $|\xi| ->oo$.
+
+    \item $\hat g$ can be defined for any function $g\in L_2$ in such a way that
+    $\hat g\in L_2$ and for any $f,g\in L_2$ Paseval's identity (Plancherel's
+    theorem) holds:
+    $$
+        (f,g) = \int_{\R^d}f\bar gdx = \int_{\R^d}\hat f\bar{\hat g}dx
+        = (\hat f,\hat g).
+    $$
+    
+    \item Paseval's identity also hold if $f\in L_1$, $g\in L_2\cap L_oo$, and
+    $\hat g\in L_1$, which is proved by using the above for $n\land f\vee (-n)$
+    and using the dominated convergence theorem as $n->oo$.
+
+    \item For $f,g\in L_1$, $\Fc(f*g)(\xi) = c_d^{-1}\hat f(\xi)\hat g(\xi)$ (By
+    Young's inequality, $f*g\in L_1$ holds so $\Fc(f*g)$ is well-defined).
+
+    \item For any $g\in L_2$ we have
+    $$
+        g(x) = c_d\int_{\R^d}e^{ix\cdot\xi}\hat g(\xi)d\xi =: \Fc^{-1}(\hat g)
+    $$
+    almost everywhere, where the right-hand side is understood in the $L_2$
+    sense.
+}
+
+If $g\in L_1$, then $\hat g$ is not necessarily integrable. For instance, if
+$d=1$ and $g=e^{-|x|}"sgn"x$, then $\hat g(\xi) = c\xi/(1+|\xi|^2)$, where $c$
+is a constant.
+
+Also as reminder recall that, for $g\in L_2$, its Fourier transform $\hat g$ is
+defined as the $L_2$ limit of the Fourier transforms $\hat g_n$ for any sequence
+$g_n->g$ in $L_2$.

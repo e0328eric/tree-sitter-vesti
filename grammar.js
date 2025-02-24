@@ -38,13 +38,20 @@ module.exports = grammar({
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
         $.KEYWORD_nonstopmode,
+        $._text_content,
       ),
 
     docclass_decl: ($) =>
-      seq($.KEYWORD_docclass, $.class_pkg_name, optional($.options)),
+      prec.right(
+        2,
+        seq($.KEYWORD_docclass, $.class_pkg_name, optional($.options)),
+      ),
 
     singlepkg_decl: ($) =>
-      seq($.KEYWORD_importpkg, $.class_pkg_name, optional($.options)),
+      prec.right(
+        2,
+        seq($.KEYWORD_importpkg, $.class_pkg_name, optional($.options)),
+      ),
 
     multipkg_decl: ($) =>
       seq(
@@ -56,10 +63,14 @@ module.exports = grammar({
         "}",
       ),
 
-    importmod_decl: ($) => seq($.KEYWORD_importmod, "(", $.filepath, ")"),
-    importfile_decl: ($) => seq($.KEYWORD_importfile, "(", $.filepath, ")"),
-    importves_decl: ($) => seq($.KEYWORD_importves, "(", $.filepath, ")"),
-    getfp_decl: ($) => seq($.KEYWORD_getfp, "(", $.filepath, ")"),
+    importmod_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_importmod, "(", $.filepath, ")")),
+    importfile_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_importfile, "(", $.filepath, ")")),
+    importves_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
+    getfp_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
 
     useenv_decl: ($) =>
       seq(
@@ -72,18 +83,9 @@ module.exports = grammar({
       ),
 
     begenv_decl: ($) =>
-      seq(
-        $.KEYWORD_begenv,
-        $.env_name,
-        repeat($.env_arg),
-        "{",
-      ),
+      seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg), "{"),
 
-    endenv_decl: ($) =>
-      seq(
-        $.KEYWORD_endenv,
-        $.env_name,
-      ),
+    endenv_decl: ($) => seq($.KEYWORD_endenv, $.env_name),
 
     luacode: ($) => seq($.KEYWORD_luacode, "{", $.luacode_contents, "}"),
     luacode_contents: ($) => repeat1(/[^}]/),
@@ -127,6 +129,17 @@ module.exports = grammar({
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
     KEYWORD_luacode: ($) => token("luacode"),
+
+    // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
+    _text_content: ($) => prec.right(1, choice($.text, "(", ")")),
+    text: ($) =>
+      prec.right(
+        repeat1(field("word", choice($.operator, $.word, $.delimiter))),
+      ),
+    word: ($) => /[^\s\\%\{\},\$\[\]\(\)=\#&_\^\-\+\/\*]+/,
+    operator: ($) => choice("+", "-", "*", "/", "<", ">", "!", "|", ":", "'"),
+    delimiter: ($) => /&/,
+
     digit: ($) => token(/[0-9]/),
     ascii_letter: ($) => token(/[A-Za-z]/),
     letter: ($) => token(/\p{L}/u),
