@@ -55,10 +55,10 @@ module.exports = grammar({
         "}",
       ),
 
-    importmod_decl: ($) => seq($.KEYWORD_importmod, "(", $filepath, ")"),
-    importfile_decl: ($) => seq($.KEYWORD_importfile, "(", $filepath, ")"),
-    importves_decl: ($) => seq($.KEYWORD_imporves, "(", $filepath, ")"),
-    getfp_decl: ($) => seq($.KEYWORD_getfp, "(", $filepath, ")"),
+    importmod_decl: ($) => seq($.KEYWORD_importmod, "(", $.filepath, ")"),
+    importfile_decl: ($) => seq($.KEYWORD_importfile, "(", $.filepath, ")"),
+    importves_decl: ($) => seq($.KEYWORD_importves, "(", $.filepath, ")"),
+    getfp_decl: ($) => seq($.KEYWORD_getfp, "(", $.filepath, ")"),
 
     useenv_decl: ($) =>
       seq(

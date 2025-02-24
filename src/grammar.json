@@ -25,7 +25,27 @@
         },
         {
           "type": "SYMBOL",
-          "name": "env_decl"
+          "name": "importmod_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "importfile_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "importves_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "useenv_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "begenv_decl"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "endenv_decl"
         },
         {
           "type": "SYMBOL",
@@ -230,7 +250,91 @@
         }
       ]
     },
-    "env_decl": {
+    "importmod_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_importmod"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "filepath"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "importfile_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_importfile"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "filepath"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "importves_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_importves"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "filepath"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "getfp_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_getfp"
+        },
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "filepath"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "useenv_decl": {
       "type": "SEQ",
       "members": [
         {
@@ -262,6 +366,43 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "begenv_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_begenv"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "env_name"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "env_arg"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        }
+      ]
+    },
+    "endenv_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_endenv"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "env_name"
         }
       ]
     },
@@ -305,22 +446,14 @@
           "name": "letter"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "letter"
-              },
-              {
-                "type": "STRING",
-                "value": "@"
-              }
-            ]
-          }
+          "type": "SYMBOL",
+          "name": "latex_function_name"
         }
       ]
+    },
+    "latex_function_name": {
+      "type": "PATTERN",
+      "value": "[@\\p{XID_Start}][@\\p{XID_Continue}]*"
     },
     "inline_math": {
       "type": "SEQ",
@@ -462,6 +595,13 @@
         }
       ]
     },
+    "filepath": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[\\p{L}@/]+"
+      }
+    },
     "class_pkg_name": {
       "type": "TOKEN",
       "content": {
@@ -502,6 +642,13 @@
       "content": {
         "type": "STRING",
         "value": "importfile"
+      }
+    },
+    "KEYWORD_importves": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "importves"
       }
     },
     "KEYWORD_useltx3": {

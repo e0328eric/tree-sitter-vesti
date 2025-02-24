@@ -1,5 +1,28 @@
 [
   {
+    "type": "begenv_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_begenv",
+          "named": true
+        },
+        {
+          "type": "env_arg",
+          "named": true
+        },
+        {
+          "type": "env_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "display_math",
     "named": true,
     "fields": {}
@@ -28,6 +51,25 @@
     }
   },
   {
+    "type": "endenv_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_endenv",
+          "named": true
+        },
+        {
+          "type": "env_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "env_arg",
     "named": true,
     "fields": {},
@@ -47,7 +89,7 @@
     }
   },
   {
-    "type": "env_decl",
+    "type": "importfile_decl",
     "named": true,
     "fields": {},
     "children": {
@@ -55,15 +97,49 @@
       "required": true,
       "types": [
         {
-          "type": "KEYWORD_useenv",
+          "type": "KEYWORD_importfile",
           "named": true
         },
         {
-          "type": "env_arg",
+          "type": "filepath",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "importmod_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_importmod",
           "named": true
         },
         {
-          "type": "env_name",
+          "type": "filepath",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "importves_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_importves",
+          "named": true
+        },
+        {
+          "type": "filepath",
           "named": true
         }
       ]
@@ -82,6 +158,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "latex_function_name",
+          "named": true
+        },
         {
           "type": "letter",
           "named": true
@@ -211,6 +291,10 @@
           "named": true
         },
         {
+          "type": "begenv_decl",
+          "named": true
+        },
+        {
           "type": "display_math",
           "named": true
         },
@@ -219,7 +303,19 @@
           "named": true
         },
         {
-          "type": "env_decl",
+          "type": "endenv_decl",
+          "named": true
+        },
+        {
+          "type": "importfile_decl",
+          "named": true
+        },
+        {
+          "type": "importmod_decl",
+          "named": true
+        },
+        {
+          "type": "importves_decl",
           "named": true
         },
         {
@@ -240,6 +336,33 @@
         },
         {
           "type": "singlepkg_decl",
+          "named": true
+        },
+        {
+          "type": "useenv_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "useenv_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_useenv",
+          "named": true
+        },
+        {
+          "type": "env_arg",
+          "named": true
+        },
+        {
+          "type": "env_name",
           "named": true
         }
       ]
@@ -285,15 +408,35 @@
     "named": false
   },
   {
-    "type": "@",
-    "named": false
+    "type": "KEYWORD_begenv",
+    "named": true
   },
   {
     "type": "KEYWORD_docclass",
     "named": true
   },
   {
+    "type": "KEYWORD_endenv",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_getfp",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_importfile",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_importmod",
+    "named": true
+  },
+  {
     "type": "KEYWORD_importpkg",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_importves",
     "named": true
   },
   {
@@ -350,6 +493,14 @@
   },
   {
     "type": "env_name",
+    "named": true
+  },
+  {
+    "type": "filepath",
+    "named": true
+  },
+  {
+    "type": "latex_function_name",
     "named": true
   },
   {
