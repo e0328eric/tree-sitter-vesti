@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-vesti
-        VERSION "0.1.0"
+        VERSION "14.0.0"
         DESCRIPTION "tree-sitter parser for vesti"
         HOMEPAGE_URL "https://github.com/e0328eric/vesti"
         LANGUAGES C)

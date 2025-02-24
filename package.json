@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-vesti",
-  "version": "0.1.0",
+  "version": "14.0.0",
   "description": "tree-sitter parser for vesti",
   "repository": "https://github.com/e0328eric/vesti",
   "license": "MIT",

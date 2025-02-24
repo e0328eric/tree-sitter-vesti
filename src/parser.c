@@ -6,7 +6,7 @@
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #endif
 
-#define LANGUAGE_VERSION 15
+#define LANGUAGE_VERSION 14
 #define STATE_COUNT 66
 #define LARGE_STATE_COUNT 2
 #define SYMBOL_COUNT 38
@@ -1631,8 +1631,8 @@ TS_PUBLIC const TSLanguage *tree_sitter_vesti(void) {
     .name = "vesti",
     .max_reserved_word_set_size = 0,
     .metadata = {
-      .major_version = 0,
-      .minor_version = 1,
+      .major_version = 14,
+      .minor_version = 0,
       .patch_version = 0,
     },
   };

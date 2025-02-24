@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-vesti
 HOMEPAGE_URL := https://github.com/e0328eric/vesti
-VERSION := 0.1.0
+VERSION := 14.0.0
 
 # repository
 SRC_DIR := src
