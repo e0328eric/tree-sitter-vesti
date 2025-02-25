@@ -808,6 +808,14 @@
             {
               "type": "SYMBOL",
               "name": "placeholder"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "subscript"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "superscript"
             }
           ]
         }
@@ -878,6 +886,26 @@
       ]
     },
     "latex_function": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "latex_function_name"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "brace_group"
+            }
+          }
+        ]
+      }
+    },
+    "latex_function_name": {
       "type": "PATTERN",
       "value": "\\\\([^\\r\\n]|[@a-zA-Z]+\\*?)?"
     },

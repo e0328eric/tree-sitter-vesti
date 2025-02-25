@@ -185,6 +185,25 @@
     "fields": {}
   },
   {
+    "type": "latex_function",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "brace_group",
+          "named": true
+        },
+        {
+          "type": "latex_function_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "luacode",
     "named": true,
     "fields": {},
@@ -290,6 +309,52 @@
     }
   },
   {
+    "type": "subscript",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "brace_group",
+          "named": true
+        },
+        {
+          "type": "latex_function",
+          "named": true
+        },
+        {
+          "type": "letter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "superscript",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "brace_group",
+          "named": true
+        },
+        {
+          "type": "latex_function",
+          "named": true
+        },
+        {
+          "type": "letter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "text",
     "named": true,
     "fields": {},
@@ -303,6 +368,14 @@
         },
         {
           "type": "placeholder",
+          "named": true
+        },
+        {
+          "type": "subscript",
+          "named": true
+        },
+        {
+          "type": "superscript",
           "named": true
         },
         {
@@ -552,6 +625,14 @@
     "named": false
   },
   {
+    "type": "^",
+    "named": false
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
     "type": "class_pkg_name",
     "named": true
   },
@@ -568,7 +649,11 @@
     "named": true
   },
   {
-    "type": "latex_function",
+    "type": "latex_function_name",
+    "named": true
+  },
+  {
+    "type": "letter",
     "named": true
   },
   {
