@@ -22,7 +22,7 @@
 ((class_pkg_name) @type)
 ((env_name) @type)
 ((luacode_contents) @injection.language) @injection.content
-((latex_function) @function)
+((latex_function_name) @function)
 
 ((inline_math) @string)
 ((display_math) @string)
