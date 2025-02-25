@@ -5,6 +5,7 @@
 ((KEYWORD_importpkg) @keyword)
 ((KEYWORD_importmod) @keyword)
 ((KEYWORD_importfile) @keyword)
+((KEYWORD_importves) @keyword)
 ((KEYWORD_useltx3) @keyword)
 ((KEYWORD_getfp) @keyword)
 ((KEYWORD_startdoc) @keyword)
@@ -38,4 +39,3 @@
 ;; Comments
 ((line_comment) @comment)
 ((multiline_comment) @comment)
-
