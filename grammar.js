@@ -4,8 +4,8 @@
  * @license MIT
  */
 
-/// <reference types="tree-sitter-cli/dsl" />
-// @ts-check
+///// <reference types="tree-sitter-cli/dsl" />
+//// @ts-check
 
 module.exports = grammar({
   name: "vesti",
@@ -13,9 +13,8 @@ module.exports = grammar({
   extras: ($) => [/\s/, $.line_comment, $.multiline_comment],
 
   rules: {
-    vesti_content: ($) => repeat1($.statement),
-
-    statement: ($) =>
+    vesti_content: ($) => repeat1($._statement),
+    _statement: ($) =>
       choice(
         $.docclass_decl,
         $.singlepkg_decl,
@@ -28,9 +27,6 @@ module.exports = grammar({
         $.begenv_decl,
         $.endenv_decl,
         $.luacode,
-        $.latex_function,
-        $.inline_math,
-        $.display_math,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -38,30 +34,40 @@ module.exports = grammar({
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
         $.KEYWORD_nonstopmode,
+        $.singleline_raw_latex,
+        $.multiline_raw_latex,
         $._text_content,
       ),
 
     docclass_decl: ($) =>
-      prec.right(
-        2,
-        seq($.KEYWORD_docclass, $.class_pkg_name, optional($.options)),
-      ),
-
+      seq($.KEYWORD_docclass, $.class_pkg_name, optional($.options), /\r?\n/),
     singlepkg_decl: ($) =>
-      prec.right(
-        2,
-        seq($.KEYWORD_importpkg, $.class_pkg_name, optional($.options)),
-      ),
-
+      seq($.KEYWORD_importpkg, $.class_pkg_name, optional($.options), /\r?\n/),
     multipkg_decl: ($) =>
       seq(
         $.KEYWORD_importpkg,
         "{",
-        seq($.class_pkg_name, optional($.options)),
-        repeat(seq(",", optional("\n"), $.class_pkg_name, optional($.options))),
-        optional(seq(",", optional("\n"))),
+        $.class_pkg_name,
+        optional($.options),
+        repeat(
+          seq(",", optional(/\r?\n/), $.class_pkg_name, optional($.options)),
+        ),
+        optional(","),
+        optional(/\r?\n/),
         "}",
       ),
+
+    options: ($) =>
+      seq(
+        "(",
+        $.option_name,
+        repeat(seq(",", $.option_name)),
+        optional(","),
+        ")",
+      ),
+
+    class_pkg_name: ($) => /[\w\d-]+/,
+    option_name: ($) => /([^,()]|\\,|\\(|\\))+/,
 
     importmod_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importmod, "(", $.filepath, ")")),
@@ -71,42 +77,28 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
     getfp_decl: ($) =>
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
-
     useenv_decl: ($) =>
-      prec.right(1, seq($.KEYWORD_useenv, $.env_name, repeat($.env_arg), "{")),
+      prec.right(
+        1,
+        seq($.KEYWORD_useenv, $.env_name, repeat($.env_arg), $.brace_group),
+      ),
     begenv_decl: ($) =>
       prec.right(
         1,
         seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg), /(\r)?\n/),
       ),
     endenv_decl: ($) => seq($.KEYWORD_endenv, $.env_name),
-
-    luacode: ($) => seq($.KEYWORD_luacode, "{", $.luacode_contents, "}"),
-    luacode_contents: ($) => repeat1(/[^}]/),
-
-    latex_function: ($) =>
-      seq("\\", $.letter, $.latex_function_name, repeat($.latex_function_arg)),
-    latex_function_name: ($) => /[@\p{XID_Start}][@\p{XID_Continue}]*/,
-    latex_function_arg: ($) => prec.right(1, seq("{", /[^}]/, "}")),
-    inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
-    display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
-
-    options: ($) =>
-      seq(
-        "(",
-        repeat1(/[^,]/),
-        optional(repeat(seq(",", repeat1(/[^,]/)))),
-        ")",
-      ),
-
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
-    filepath: ($) => token(/[\p{L}@/]+/),
 
-    class_pkg_name: ($) => token(/[A-Za-z0-9-]+/),
-
-    env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
+    luacode: ($) =>
+      seq(
+        $.KEYWORD_luacode,
+        "{",
+        alias($.vesti_content, $.luacode_contents),
+        "}",
+      ),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
@@ -127,20 +119,41 @@ module.exports = grammar({
     KEYWORD_luacode: ($) => token("luacode"),
 
     // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
-    _text_content: ($) => prec.right(1, choice($.text, "(", ")")),
-    text: ($) =>
+    _text_content: ($) =>
       prec.right(
-        repeat1(field("word", choice($.operator, $.word, $.delimiter))),
+        1,
+        choice($.brace_group, $.paren_group, $.latex_function, $.text, $._math),
       ),
-    word: ($) => /[^\s\\%\{\},\$\[\]\(\)=\#&_\^\-\+\/\*]+/,
-    operator: ($) => choice("+", "-", "*", "/", "<", ">", "!", "|", ":", "'"),
+
+    brace_group: ($) => seq("{", $.vesti_content, "}"),
+    paren_group: ($) => seq("(", $.vesti_content, ")"),
+
+    _math: ($) => choice($.inline_math, $.display_math),
+    inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
+    display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
+
+    text: ($) =>
+      prec.right(repeat1(choice($.word, $.delimiter, $.placeholder))),
+    word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
+    placeholder: ($) => /#+\d/,
     delimiter: ($) => /&/,
+    subscript: ($) =>
+      seq("_", choice($.brace_group, $.letter, $.latex_function)),
+    superscript: ($) =>
+      seq("^", choice($.brace_group, $.letter, $.latex_function)),
 
-    digit: ($) => token(/[0-9]/),
-    ascii_letter: ($) => token(/[A-Za-z]/),
-    letter: ($) => token(/\p{L}/u),
+    latex_function: ($) => /\\([^\r\n]|[@a-zA-Z]+\*?)?/,
+    letter: ($) => /[^\\%\{\}\$\#_\^]/,
+    digit: ($) => /[0-9]/,
+    ascii_letter: ($) => /[A-Za-z]/,
+    filepath: ($) => token(/[\p{L}@/]+/),
+    env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
 
-    line_comment: ($) => token(/%([^\*\!\-])[^\n]*/),
-    multiline_comment: ($) => token(/%\*[\s\S]*?\*\%/),
+    singleline_raw_latex: ($) => /%-#[^\n]*\n/,
+    multiline_raw_latex: ($) => /%\-(.|\n)*?\-%/,
+
+    // Comments
+    line_comment: ($) => /%[^!*-][^\n]*\n/,
+    multiline_comment: ($) => /%\*(.|\n)*?\*%/,
   },
 });

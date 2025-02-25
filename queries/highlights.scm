@@ -23,8 +23,12 @@
 ((env_name) @type)
 ((luacode_contents) @injection.language) @injection.content
 ((latex_function) @function)
+
 ((inline_math) @string)
 ((display_math) @string)
+
+((singleline_raw_latex) @hint)
+((multiline_raw_latex) @hint)
 
 ;; Options and environment arguments
 ((options) @constant)
