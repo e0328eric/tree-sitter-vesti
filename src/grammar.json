@@ -689,6 +689,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "sqparen_group"
+          },
+          {
+            "type": "SYMBOL",
             "name": "latex_function"
           },
           {
@@ -733,6 +737,23 @@
         {
           "type": "STRING",
           "value": ")"
+        }
+      ]
+    },
+    "sqparen_group": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "SYMBOL",
+          "name": "vesti_content"
+        },
+        {
+          "type": "STRING",
+          "value": "]"
         }
       ]
     },

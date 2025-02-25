@@ -122,11 +122,19 @@ module.exports = grammar({
     _text_content: ($) =>
       prec.right(
         1,
-        choice($.brace_group, $.paren_group, $.latex_function, $.text, $._math),
+        choice(
+          $.brace_group,
+          $.paren_group,
+          $.sqparen_group,
+          $.latex_function,
+          $.text,
+          $._math,
+        ),
       ),
 
     brace_group: ($) => seq("{", $.vesti_content, "}"),
     paren_group: ($) => seq("(", $.vesti_content, ")"),
+    sqparen_group: ($) => seq("[", $.vesti_content, "]"),
 
     _math: ($) => choice($.inline_math, $.display_math),
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),

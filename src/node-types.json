@@ -309,6 +309,21 @@
     }
   },
   {
+    "type": "sqparen_group",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "vesti_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "subscript",
     "named": true,
     "fields": {},
@@ -515,6 +530,10 @@
         },
         {
           "type": "singlepkg_decl",
+          "named": true
+        },
+        {
+          "type": "sqparen_group",
           "named": true
         },
         {
