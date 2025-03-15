@@ -958,7 +958,7 @@
     },
     "singleline_raw_latex": {
       "type": "PATTERN",
-      "value": "%-#[^\\n]*\\n"
+      "value": "%#\\n|%#[^\\n]*\\n"
     },
     "multiline_raw_latex": {
       "type": "PATTERN",
@@ -966,7 +966,7 @@
     },
     "line_comment": {
       "type": "PATTERN",
-      "value": "%[^!*-][^\\n]*\\n"
+      "value": "%\\n|%[^#!*-][^\\n]*\\n"
     },
     "multiline_comment": {
       "type": "PATTERN",
