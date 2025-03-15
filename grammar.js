@@ -173,7 +173,7 @@ module.exports = grammar({
     multiline_raw_latex: ($) => /%\-(.|\n)*?\-%/,
 
     // Comments
-    line_comment: ($) => /%[^!*-][^\n]*\n/,
+    line_comment: ($) => /%[^!*-]([^\n]*\n)|\n/,
     multiline_comment: ($) => /%\*(.|\n)*?\*%/,
   },
 });
