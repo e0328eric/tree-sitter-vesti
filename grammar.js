@@ -169,11 +169,11 @@ module.exports = grammar({
     filepath: ($) => token(/[\p{L}@/]+/),
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
 
-    singleline_raw_latex: ($) => /%-#[^\n]*\n/,
+    singleline_raw_latex: ($) => /%-#\n|%-#[^\n]*\n/,
     multiline_raw_latex: ($) => /%\-(.|\n)*?\-%/,
 
     // Comments
-    line_comment: ($) => /%[^!*-].*\n/,
+    line_comment: ($) => /%\n|%[^!*-][^\n]*\n/,
     multiline_comment: ($) => /%\*(.|\n)*?\*%/,
   },
 });
