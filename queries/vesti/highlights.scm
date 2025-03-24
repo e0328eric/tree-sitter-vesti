@@ -27,8 +27,8 @@
 ((inline_math) @string)
 ((display_math) @string)
 
-((singleline_raw_latex) @string)
-((multiline_raw_latex) @string)
+((singleline_raw_latex) @type)
+((multiline_raw_latex) @type)
 
 ;; Options and environment arguments
 ((options) @constant)
