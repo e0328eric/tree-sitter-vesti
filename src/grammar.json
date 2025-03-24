@@ -961,16 +961,53 @@
       "value": "%#\\n|%#[^\\n]*\\n"
     },
     "multiline_raw_latex": {
-      "type": "PATTERN",
-      "value": "%\\-(.|\\n)*\\-%"
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "%-"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[^-]*\\-+([^%-][^-]*\\-+)*"
+          },
+          {
+            "type": "STRING",
+            "value": "%"
+          }
+        ]
+      }
     },
-    "line_comment": {
-      "type": "PATTERN",
-      "value": "%\\n|%[^#!*-][^\\n]*\\n"
-    },
-    "multiline_comment": {
-      "type": "PATTERN",
-      "value": "%\\*(.|\\n)*\\*%"
+    "comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "%\\n|%[^#!*-][^\\n]*\\n"
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "%*"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[^*]*\\*+([^%*][^*]*\\*+)*"
+              },
+              {
+                "type": "STRING",
+                "value": "%"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "extras": [
@@ -980,11 +1017,7 @@
     },
     {
       "type": "SYMBOL",
-      "name": "line_comment"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "multiline_comment"
+      "name": "comment"
     }
   ],
   "conflicts": [],

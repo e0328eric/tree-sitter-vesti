@@ -10,7 +10,7 @@
 module.exports = grammar({
   name: "vesti",
 
-  extras: ($) => [/\s/, $.line_comment, $.multiline_comment],
+  extras: ($) => [/\s/, $.comment],
 
   rules: {
     vesti_content: ($) => repeat1($._statement),
@@ -170,10 +170,18 @@ module.exports = grammar({
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
 
     singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/,
-    multiline_raw_latex: ($) => /%\-(.|\n)*\-%/,
+    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    multiline_raw_latex: (_) =>
+      token(seq("%-", /[^-]*\-+([^%-][^-]*\-+)*/, "%")),
 
     // Comments
-    line_comment: ($) => /%\n|%[^#!*-][^\n]*\n/,
-    multiline_comment: ($) => /%\*(.|\n)*\*%/,
+    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    comment: (_) =>
+      token(
+        choice(
+          /%\n|%[^#!*-][^\n]*\n/,
+          seq("%*", /[^*]*\*+([^%*][^*]*\*+)*/, "%"),
+        ),
+      ),
   },
 });
