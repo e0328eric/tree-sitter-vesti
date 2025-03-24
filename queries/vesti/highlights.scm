@@ -36,5 +36,4 @@
 ((optional_arg) @constant)
 
 ;; Comments
-((line_comment) @comment)
-((multiline_comment) @comment)
+((comment) @comment)
