@@ -20,7 +20,7 @@ module.exports = grammar({
         $.singlepkg_decl,
         $.multipkg_decl,
         $.importmod_decl,
-        $.importfile_decl,
+        $.copyfile_decl,
         $.importves_decl,
         $.getfp_decl,
         $.useenv_decl,
@@ -71,8 +71,8 @@ module.exports = grammar({
 
     importmod_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importmod, "(", $.filepath, ")")),
-    importfile_decl: ($) =>
-      prec.right(2, seq($.KEYWORD_importfile, "(", $.filepath, ")")),
+    copyfile_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_copyfile, "(", $.filepath, ")")),
     importves_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
     getfp_decl: ($) =>
@@ -103,7 +103,7 @@ module.exports = grammar({
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
     KEYWORD_importmod: ($) => token("importmod"),
-    KEYWORD_importfile: ($) => token("importfile"),
+    KEYWORD_copyfile: ($) => token("cpfile"),
     KEYWORD_importves: ($) => token("importves"),
     KEYWORD_useltx3: ($) => token("useltx3"),
     KEYWORD_getfp: ($) => token("getfp"),

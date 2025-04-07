@@ -4,7 +4,7 @@
 ((KEYWORD_docclass) @keyword)
 ((KEYWORD_importpkg) @keyword)
 ((KEYWORD_importmod) @keyword)
-((KEYWORD_importfile) @keyword)
+((KEYWORD_copyfile) @keyword)
 ((KEYWORD_importves) @keyword)
 ((KEYWORD_useltx3) @keyword)
 ((KEYWORD_getfp) @keyword)

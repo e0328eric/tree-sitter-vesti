@@ -30,7 +30,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "importfile_decl"
+          "name": "copyfile_decl"
         },
         {
           "type": "SYMBOL",
@@ -331,7 +331,7 @@
         ]
       }
     },
-    "importfile_decl": {
+    "copyfile_decl": {
       "type": "PREC_RIGHT",
       "value": 2,
       "content": {
@@ -339,7 +339,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "KEYWORD_importfile"
+            "name": "KEYWORD_copyfile"
           },
           {
             "type": "STRING",
@@ -575,11 +575,11 @@
         "value": "importmod"
       }
     },
-    "KEYWORD_importfile": {
+    "KEYWORD_copyfile": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "importfile"
+        "value": "cpfile"
       }
     },
     "KEYWORD_importves": {
