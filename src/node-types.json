@@ -453,6 +453,10 @@
           "named": true
         },
         {
+          "type": "KEYWORD_mathmode",
+          "named": true
+        },
+        {
           "type": "KEYWORD_nonstopmode",
           "named": true
         },
@@ -617,6 +621,10 @@
   },
   {
     "type": "KEYWORD_makeatother",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_mathmode",
     "named": true
   },
   {

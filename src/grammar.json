@@ -86,6 +86,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "KEYWORD_mathmode"
+        },
+        {
+          "type": "SYMBOL",
           "name": "singleline_raw_latex"
         },
         {
@@ -671,6 +675,13 @@
       "content": {
         "type": "STRING",
         "value": "luacode"
+      }
+    },
+    "KEYWORD_mathmode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "mathmode"
       }
     },
     "_text_content": {

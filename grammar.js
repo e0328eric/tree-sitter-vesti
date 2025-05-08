@@ -34,6 +34,7 @@ module.exports = grammar({
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
         $.KEYWORD_nonstopmode,
+        $.KEYWORD_mathmode,
         $.singleline_raw_latex,
         $.multiline_raw_latex,
         $._text_content,
@@ -117,6 +118,7 @@ module.exports = grammar({
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
     KEYWORD_luacode: ($) => token("luacode"),
+    KEYWORD_mathmode: ($) => token("mathmode"),
 
     // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
     _text_content: ($) =>
