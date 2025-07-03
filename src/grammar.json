@@ -42,6 +42,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "compile_type_decl"
+        },
+        {
+          "type": "SYMBOL",
           "name": "useenv_decl"
         },
         {
@@ -410,6 +414,31 @@
         ]
       }
     },
+    "compile_type_decl": {
+      "type": "PREC_RIGHT",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "KEYWORD_compty"
+          },
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "filepath"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
+    },
     "useenv_decl": {
       "type": "PREC_RIGHT",
       "value": 1,
@@ -683,6 +712,46 @@
         "type": "STRING",
         "value": "mathmode"
       }
+    },
+    "KEYWORD_compty": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "compty"
+      }
+    },
+    "compile_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "plain"
+          }
+        },
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "pdf"
+          }
+        },
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "xe"
+          }
+        },
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "lua"
+          }
+        }
+      ]
     },
     "_text_content": {
       "type": "PREC_RIGHT",
@@ -1035,5 +1104,6 @@
   "precedences": [],
   "externals": [],
   "inline": [],
-  "supertypes": []
+  "supertypes": [],
+  "reserved": {}
 }

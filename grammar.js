@@ -23,6 +23,7 @@ module.exports = grammar({
         $.copyfile_decl,
         $.importves_decl,
         $.getfp_decl,
+        $.compile_type_decl,
         $.useenv_decl,
         $.begenv_decl,
         $.endenv_decl,
@@ -78,6 +79,8 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
     getfp_decl: ($) =>
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
+    compile_type_decl: ($) =>
+      prec.right(2, seq($.KEYWORD_compty, "(", $.filepath, ")")),
     useenv_decl: ($) =>
       prec.right(
         1,
@@ -119,6 +122,10 @@ module.exports = grammar({
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
     KEYWORD_luacode: ($) => token("luacode"),
     KEYWORD_mathmode: ($) => token("mathmode"),
+    KEYWORD_compty: ($) => token("compty"),
+
+    compile_type: ($) =>
+      choice(token("plain"), token("pdf"), token("xe"), token("lua")),
 
     // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
     _text_content: ($) =>

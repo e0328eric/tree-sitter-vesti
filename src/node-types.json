@@ -38,6 +38,25 @@
     }
   },
   {
+    "type": "compile_type_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_compty",
+          "named": true
+        },
+        {
+          "type": "filepath",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "copyfile_decl",
     "named": true,
     "fields": {},
@@ -477,6 +496,10 @@
           "named": true
         },
         {
+          "type": "compile_type_decl",
+          "named": true
+        },
+        {
           "type": "copyfile_decl",
           "named": true
         },
@@ -576,6 +599,10 @@
     "named": true
   },
   {
+    "type": "KEYWORD_compty",
+    "named": true
+  },
+  {
     "type": "KEYWORD_copyfile",
     "named": true
   },
@@ -665,7 +692,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "delimiter",
