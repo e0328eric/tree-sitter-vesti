@@ -10,6 +10,14 @@
 module.exports = grammar({
   name: "vesti",
 
+  externals: ($) => [
+    $.pycode_start, // "pycode <BRACKET>\n"  (captures <BRACKET>)
+    $.pycode_end, // "<BRACKET>\n"
+    $.pycode_prefix, // "^\s*\\\\" (two backslashes) at line start (indent allowed)
+    $.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
+    $.pycode_blankline, // a blank (or whitespace-only) line inside a pycode block$.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
+  ],
+
   extras: ($) => [/\s/, $.comment],
 
   rules: {
@@ -27,7 +35,7 @@ module.exports = grammar({
         $.useenv_decl,
         $.begenv_decl,
         $.endenv_decl,
-        $.luacode,
+        $.pycode_block,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -96,12 +104,18 @@ module.exports = grammar({
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
 
-    luacode: ($) =>
+    pycode_block: ($) =>
       seq(
-        $.KEYWORD_luacode,
-        "{",
-        alias($.vesti_content, $.luacode_contents),
-        "}",
+        $.KEYWORD_pycode,
+        field("start", $.pycode_start),
+        repeat1(field("line", $.pycode_line)),
+        field("end", $.pycode_end),
+      ),
+
+    pycode_line: ($) =>
+      choice(
+        seq($.pycode_prefix, field("content", $.pycode_line_content)),
+        $.pycode_blankline,
       ),
 
     KEYWORD_docclass: ($) => token("docclass"),
@@ -120,9 +134,9 @@ module.exports = grammar({
     KEYWORD_ltx3on: ($) => token("ltx3on"),
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
-    KEYWORD_luacode: ($) => token("luacode"),
     KEYWORD_mathmode: ($) => token("mathmode"),
     KEYWORD_compty: ($) => token("compty"),
+    KEYWORD_pycode: ($) => token("pycode"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

@@ -223,25 +223,6 @@
     }
   },
   {
-    "type": "luacode",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "KEYWORD_luacode",
-          "named": true
-        },
-        {
-          "type": "luacode_contents",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "mandantory_arg",
     "named": true,
     "fields": {}
@@ -299,6 +280,82 @@
       "types": [
         {
           "type": "vesti_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pycode_block",
+    "named": true,
+    "fields": {
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "pycode_end",
+            "named": true
+          }
+        ]
+      },
+      "line": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "pycode_line",
+            "named": true
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "pycode_start",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_pycode",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pycode_line",
+    "named": true,
+    "fields": {
+      "content": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "pycode_line_content",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "pycode_blankline",
+          "named": true
+        },
+        {
+          "type": "pycode_prefix",
           "named": true
         }
       ]
@@ -536,10 +593,6 @@
           "named": true
         },
         {
-          "type": "luacode",
-          "named": true
-        },
-        {
           "type": "multiline_raw_latex",
           "named": true
         },
@@ -549,6 +602,10 @@
         },
         {
           "type": "paren_group",
+          "named": true
+        },
+        {
+          "type": "pycode_block",
           "named": true
         },
         {
@@ -639,10 +696,6 @@
     "named": true
   },
   {
-    "type": "KEYWORD_luacode",
-    "named": true
-  },
-  {
     "type": "KEYWORD_makeatletter",
     "named": true
   },
@@ -656,6 +709,10 @@
   },
   {
     "type": "KEYWORD_nonstopmode",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_pycode",
     "named": true
   },
   {
@@ -725,6 +782,26 @@
   },
   {
     "type": "placeholder",
+    "named": true
+  },
+  {
+    "type": "pycode_blankline",
+    "named": true
+  },
+  {
+    "type": "pycode_end",
+    "named": true
+  },
+  {
+    "type": "pycode_line_content",
+    "named": true
+  },
+  {
+    "type": "pycode_prefix",
+    "named": true
+  },
+  {
+    "type": "pycode_start",
     "named": true
   },
   {

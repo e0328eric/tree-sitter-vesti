@@ -1,0 +1,108 @@
+================================================================================
+Pycode with Unicode delimiter (ascii delimiter, single line)
+================================================================================
+
+pycode FOOBAR
+\\print("Hello, World!")
+FOOBAR
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)))
+
+================================================================================
+Pycode with Unicode delimiter (ascii delimiter, multiple lines)
+================================================================================
+
+pycode FOOBAR
+    \\import vesti
+
+\\print("Hello, World!")
+            \\if x == 3:
+\\    pass
+FOOBAR
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_blankline))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)))
+
+
+================================================================================
+Pycode with Unicode delimiter (unicode delimiter, single line)
+================================================================================
+
+pycode 部分積分
+\\print("Hello, World!")
+部分積分
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)))
+
+================================================================================
+Pycode with Unicode delimiter (unicode delimiter, multiple lines)
+================================================================================
+
+pycode 파이썬
+    \\import vesti
+
+\\print("Hello, World!")
+            \\if x == 3:
+\\    pass
+  파이썬
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_blankline))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)))
+
+

@@ -58,7 +58,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "luacode"
+          "name": "pycode_block"
         },
         {
           "type": "SYMBOL",
@@ -561,29 +561,65 @@
         }
       ]
     },
-    "luacode": {
+    "pycode_block": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_luacode"
+          "name": "KEYWORD_pycode"
         },
         {
-          "type": "STRING",
-          "value": "{"
-        },
-        {
-          "type": "ALIAS",
+          "type": "FIELD",
+          "name": "start",
           "content": {
             "type": "SYMBOL",
-            "name": "vesti_content"
-          },
-          "named": true,
-          "value": "luacode_contents"
+            "name": "pycode_start"
+          }
         },
         {
-          "type": "STRING",
-          "value": "}"
+          "type": "REPEAT1",
+          "content": {
+            "type": "FIELD",
+            "name": "line",
+            "content": {
+              "type": "SYMBOL",
+              "name": "pycode_line"
+            }
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "end",
+          "content": {
+            "type": "SYMBOL",
+            "name": "pycode_end"
+          }
+        }
+      ]
+    },
+    "pycode_line": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "pycode_prefix"
+            },
+            {
+              "type": "FIELD",
+              "name": "content",
+              "content": {
+                "type": "SYMBOL",
+                "name": "pycode_line_content"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pycode_blankline"
         }
       ]
     },
@@ -699,13 +735,6 @@
         "value": "nonstopmode"
       }
     },
-    "KEYWORD_luacode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "luacode"
-      }
-    },
     "KEYWORD_mathmode": {
       "type": "TOKEN",
       "content": {
@@ -718,6 +747,13 @@
       "content": {
         "type": "STRING",
         "value": "compty"
+      }
+    },
+    "KEYWORD_pycode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "pycode"
       }
     },
     "compile_type": {
@@ -1102,7 +1138,28 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "pycode_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "pycode_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "pycode_prefix"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "pycode_line_content"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "pycode_blankline"
+    }
+  ],
   "inline": [],
   "supertypes": [],
   "reserved": {}
