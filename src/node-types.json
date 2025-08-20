@@ -321,11 +321,30 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "KEYWORD_pycode",
+          "named": true
+        },
+        {
+          "type": "pycode_imports",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pycode_imports",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pycode_label",
           "named": true
         }
       ]
@@ -790,6 +809,10 @@
   },
   {
     "type": "pycode_end",
+    "named": true
+  },
+  {
+    "type": "pycode_label",
     "named": true
   },
   {

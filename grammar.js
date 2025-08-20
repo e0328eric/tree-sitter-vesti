@@ -105,11 +105,15 @@ module.exports = grammar({
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
 
     pycode_block: ($) =>
-      seq(
-        $.KEYWORD_pycode,
-        field("start", $.pycode_start),
-        repeat1(field("line", $.pycode_line)),
-        field("end", $.pycode_end),
+      prec.right(
+        2,
+        seq(
+          $.KEYWORD_pycode,
+          field("start", $.pycode_start),
+          repeat1(field("line", $.pycode_line)),
+          field("end", $.pycode_end),
+          optional($.pycode_imports),
+        ),
       ),
 
     pycode_line: ($) =>
@@ -117,6 +121,17 @@ module.exports = grammar({
         seq($.pycode_prefix, field("content", $.pycode_line_content)),
         $.pycode_blankline,
       ),
+
+    pycode_imports: ($) =>
+      seq(
+        "[",
+        $.pycode_label,
+        repeat(seq(",", $.pycode_label)),
+        optional(","),
+        "]",
+      ),
+
+    pycode_label: ($) => token(/[\p{L}/]+/),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),

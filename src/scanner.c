@@ -23,7 +23,17 @@ static inline void skip_hspace(TSLexer* lx) {
     while (lx->lookahead == ' ' || lx->lookahead == '\t') lx->advance(lx, true);
 }
 
-static uint32_t read_line_no_nl(TSLexer* lx, char* buf, uint32_t cap) {
+static uint32_t read_line_no_space(TSLexer* lx, char* buf, uint32_t cap) {
+    uint32_t n = 0;
+    while (lx->lookahead && lx->lookahead != ' ' && lx->lookahead != '\n' && lx->lookahead != '\r') {
+        if (n + 1 < cap) buf[n++] = (char) lx->lookahead;
+        lx->advance(lx, false);
+    }
+    buf[n] = '\0';
+    return n;
+}
+
+static uint32_t read_line_no_line(TSLexer* lx, char* buf, uint32_t cap) {
     uint32_t n = 0;
     while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r') {
         if (n + 1 < cap) buf[n++] = (char) lx->lookahead;
@@ -40,6 +50,12 @@ static bool is_eol(TSLexer* lx) {
 static void consume_eol(TSLexer* lx) {
     if (lx->lookahead == '\r') lx->advance(lx, false);
     if (lx->lookahead == '\n') lx->advance(lx, false);
+}
+
+static void consume_space(TSLexer* lx) {
+    if (lx->lookahead == '\r') lx->advance(lx, false);
+    if (lx->lookahead == '\n') lx->advance(lx, false);
+    if (lx->lookahead == ' ') lx->advance(lx, false);
 }
 
 static bool line_equals(const char* a, uint32_t na, const char* b, uint32_t nb) {
@@ -96,7 +112,7 @@ static bool scan_start(TSLexer* lx, ScannerState* st) {
     if (!(lx->lookahead == ' ' || lx->lookahead == '\t')) return false;
     skip_hspace(lx);
 
-    st->delimiter_len = read_line_no_nl(lx, st->delimiter, sizeof st->delimiter);
+    st->delimiter_len = read_line_no_line(lx, st->delimiter, sizeof st->delimiter);
     consume_eol(lx);
 
     st->in_block = true;
@@ -113,7 +129,7 @@ static bool scan_end(TSLexer* lx, ScannerState* st) {
     if (is_eol(lx)) return false;
 
     char tmp[1024];
-    uint32_t n = read_line_no_nl(lx, tmp, sizeof tmp);
+    uint32_t n = read_line_no_space(lx, tmp, sizeof tmp);
     // Look ahead: if line equals delimiter, consume EOL and emit END
     if (!line_equals(tmp, n, st->delimiter, st->delimiter_len)) {
         // Not the end; don't consume EOL here since we already read the text part.
@@ -122,7 +138,8 @@ static bool scan_end(TSLexer* lx, ScannerState* st) {
         // To avoid losing text, we only call scan_end before other tokens.
         return false;
     }
-    consume_eol(lx);
+
+    consume_space(lx);
     st->in_block = false;
     st->awaiting_content = false;
     lx->result_symbol = PYCODE_END;

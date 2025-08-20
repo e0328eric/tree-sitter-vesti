@@ -1,5 +1,5 @@
 ================================================================================
-Pycode with Unicode delimiter (ascii delimiter, single line)
+Pycode with Ascii delimiter (single line)
 ================================================================================
 
 pycode FOOBAR
@@ -18,7 +18,7 @@ FOOBAR
     (pycode_end)))
 
 ================================================================================
-Pycode with Unicode delimiter (ascii delimiter, multiple lines)
+Pycode with Ascii delimiter (multiple lines)
 ================================================================================
 
 pycode FOOBAR
@@ -53,7 +53,7 @@ FOOBAR
 
 
 ================================================================================
-Pycode with Unicode delimiter (unicode delimiter, single line)
+Pycode with Unicode delimiter (single line)
 ================================================================================
 
 pycode 部分積分
@@ -72,7 +72,7 @@ pycode 部分積分
     (pycode_end)))
 
 ================================================================================
-Pycode with Unicode delimiter (unicode delimiter, multiple lines)
+Pycode with Unicode delimiter (multiple lines)
 ================================================================================
 
 pycode 파이썬
@@ -105,4 +105,121 @@ pycode 파이썬
       (pycode_line_content))
     (pycode_end)))
 
+================================================================================
+Pycode with Ascii delimiter with imports (single line)
+================================================================================
 
+pycode FOOBAR
+\\print("Hello, World!")
+FOOBAR [abc, 옵션]
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)
+        (pycode_imports
+          (pycode_label)
+          (pycode_label))))
+
+================================================================================
+Pycode with Ascii delimiter with imports (multiple lines)
+================================================================================
+
+pycode FOOBAR
+    \\import vesti
+
+\\print("Hello, World!")
+            \\if x == 3:
+\\    pass
+FOOBAR  [ foobar, asdsad ]
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_blankline))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)
+        (pycode_imports
+          (pycode_label)
+          (pycode_label))))
+
+
+================================================================================
+Pycode with Unicode delimiter with imports (single line)
+================================================================================
+
+pycode 部分積分
+\\print("Hello, World!")
+部分積分 [코딩, 어렵다]
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)
+        (pycode_imports
+          (pycode_label)
+          (pycode_label))))
+
+================================================================================
+Pycode with Unicode delimiter (multiple lines)
+================================================================================
+
+pycode 파이썬
+    \\import vesti
+
+\\print("Hello, World!")
+            \\if x == 3:
+\\    pass
+  파이썬 [コンパクト, abvs]
+
+--------------------------------------------------------------------------------
+
+(vesti_content
+  (pycode_block
+    (KEYWORD_pycode)
+    (pycode_start)
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_blankline))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_line
+      (pycode_prefix)
+      (pycode_line_content))
+    (pycode_end)
+        (pycode_imports
+          (pycode_label)
+          (pycode_label))))

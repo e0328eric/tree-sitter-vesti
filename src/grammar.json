@@ -562,40 +562,56 @@
       ]
     },
     "pycode_block": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_pycode"
-        },
-        {
-          "type": "FIELD",
-          "name": "start",
-          "content": {
+      "type": "PREC_RIGHT",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
             "type": "SYMBOL",
-            "name": "pycode_start"
-          }
-        },
-        {
-          "type": "REPEAT1",
-          "content": {
+            "name": "KEYWORD_pycode"
+          },
+          {
             "type": "FIELD",
-            "name": "line",
+            "name": "start",
             "content": {
               "type": "SYMBOL",
-              "name": "pycode_line"
+              "name": "pycode_start"
             }
+          },
+          {
+            "type": "REPEAT1",
+            "content": {
+              "type": "FIELD",
+              "name": "line",
+              "content": {
+                "type": "SYMBOL",
+                "name": "pycode_line"
+              }
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "end",
+            "content": {
+              "type": "SYMBOL",
+              "name": "pycode_end"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "pycode_imports"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           }
-        },
-        {
-          "type": "FIELD",
-          "name": "end",
-          "content": {
-            "type": "SYMBOL",
-            "name": "pycode_end"
-          }
-        }
-      ]
+        ]
+      }
     },
     "pycode_line": {
       "type": "CHOICE",
@@ -622,6 +638,58 @@
           "name": "pycode_blankline"
         }
       ]
+    },
+    "pycode_imports": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pycode_label"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "pycode_label"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        }
+      ]
+    },
+    "pycode_label": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[\\p{L}/]+"
+      }
     },
     "KEYWORD_docclass": {
       "type": "TOKEN",
