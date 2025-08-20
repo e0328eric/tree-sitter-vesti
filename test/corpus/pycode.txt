@@ -3,7 +3,7 @@ Pycode with Ascii delimiter (single line)
 ================================================================================
 
 pycode FOOBAR
-\\print("Hello, World!")
+//print("Hello, World!")
 FOOBAR
 
 --------------------------------------------------------------------------------
@@ -22,11 +22,11 @@ Pycode with Ascii delimiter (multiple lines)
 ================================================================================
 
 pycode FOOBAR
-    \\import vesti
+    //import vesti
 
-\\print("Hello, World!")
-            \\if x == 3:
-\\    pass
+//print("Hello, World!")
+            //if x == 3:
+//    pass
 FOOBAR
 
 --------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ Pycode with Unicode delimiter (single line)
 ================================================================================
 
 pycode 部分積分
-\\print("Hello, World!")
+//print("Hello, World!")
 部分積分
 
 --------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ Pycode with Unicode delimiter (multiple lines)
 ================================================================================
 
 pycode 파이썬
-    \\import vesti
+    //import vesti
 
-\\print("Hello, World!")
-            \\if x == 3:
-\\    pass
+//print("Hello, World!")
+            //if x == 3:
+//    pass
   파이썬
 
 --------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ Pycode with Ascii delimiter with imports (single line)
 ================================================================================
 
 pycode FOOBAR
-\\print("Hello, World!")
+//print("Hello, World!")
 FOOBAR [abc, 옵션]
 
 --------------------------------------------------------------------------------
@@ -132,11 +132,11 @@ Pycode with Ascii delimiter with imports (multiple lines)
 ================================================================================
 
 pycode FOOBAR
-    \\import vesti
+    //import vesti
 
-\\print("Hello, World!")
-            \\if x == 3:
-\\    pass
+//print("Hello, World!")
+            //if x == 3:
+//    pass
 FOOBAR  [ foobar, asdsad ]
 
 --------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ Pycode with Unicode delimiter with imports (single line)
 ================================================================================
 
 pycode 部分積分
-\\print("Hello, World!")
+//print("Hello, World!")
 部分積分 [코딩, 어렵다]
 
 --------------------------------------------------------------------------------
@@ -192,11 +192,11 @@ Pycode with Unicode delimiter (multiple lines)
 ================================================================================
 
 pycode 파이썬
-    \\import vesti
+    //import vesti
 
-\\print("Hello, World!")
-            \\if x == 3:
-\\    pass
+//print("Hello, World!")
+            //if x == 3:
+//    pass
   파이썬 [コンパクト, abvs]
 
 --------------------------------------------------------------------------------
