@@ -22,7 +22,6 @@
 ((KEYWORD_pycode) @keyword)
 (pycode_block (pycode_start) @keyword)
 (pycode_block (pycode_end)   @keyword)
-(pycode_block (pycode_imports) @constant)
 
 ;; Identifiers
 ((class_pkg_name) @type)

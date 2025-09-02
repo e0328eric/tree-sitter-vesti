@@ -597,18 +597,6 @@
               "type": "SYMBOL",
               "name": "pycode_end"
             }
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "pycode_imports"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
           }
         ]
       }
@@ -638,58 +626,6 @@
           "name": "pycode_blankline"
         }
       ]
-    },
-    "pycode_imports": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "["
-        },
-        {
-          "type": "SYMBOL",
-          "name": "pycode_label"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "SYMBOL",
-                "name": "pycode_label"
-              }
-            ]
-          }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ","
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": "]"
-        }
-      ]
-    },
-    "pycode_label": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[\\p{L}/]+"
-      }
     },
     "KEYWORD_docclass": {
       "type": "TOKEN",
@@ -859,21 +795,13 @@
     },
     "_text_content": {
       "type": "PREC_RIGHT",
-      "value": 1,
+      "value": 0,
       "content": {
         "type": "CHOICE",
         "members": [
           {
             "type": "SYMBOL",
             "name": "brace_group"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "paren_group"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "sqparen_group"
           },
           {
             "type": "SYMBOL",
@@ -904,40 +832,6 @@
         {
           "type": "STRING",
           "value": "}"
-        }
-      ]
-    },
-    "paren_group": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "vesti_content"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
-    },
-    "sqparen_group": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "["
-        },
-        {
-          "type": "SYMBOL",
-          "name": "vesti_content"
-        },
-        {
-          "type": "STRING",
-          "value": "]"
         }
       ]
     },
@@ -1028,7 +922,7 @@
     },
     "word": {
       "type": "PATTERN",
-      "value": "[^\\s\\\\%\\{\\}\\$\\[\\]\\(\\)\\#&_\\^]+"
+      "value": "[^\\s\\\\%\\{\\}\\$\\#&_\\^]+"
     },
     "placeholder": {
       "type": "PATTERN",

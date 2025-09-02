@@ -112,7 +112,6 @@ module.exports = grammar({
           field("start", $.pycode_start),
           repeat1(field("line", $.pycode_line)),
           field("end", $.pycode_end),
-          optional($.pycode_imports),
         ),
       ),
 
@@ -121,17 +120,6 @@ module.exports = grammar({
         seq($.pycode_prefix, field("content", $.pycode_line_content)),
         $.pycode_blankline,
       ),
-
-    pycode_imports: ($) =>
-      seq(
-        "[",
-        $.pycode_label,
-        repeat(seq(",", $.pycode_label)),
-        optional(","),
-        "]",
-      ),
-
-    pycode_label: ($) => token(/[\p{L}/]+/),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
@@ -158,21 +146,8 @@ module.exports = grammar({
 
     // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
     _text_content: ($) =>
-      prec.right(
-        1,
-        choice(
-          $.brace_group,
-          $.paren_group,
-          $.sqparen_group,
-          $.latex_function,
-          $.text,
-          $._math,
-        ),
-      ),
-
+      prec.right(choice($.brace_group, $.latex_function, $.text, $._math)),
     brace_group: ($) => seq("{", $.vesti_content, "}"),
-    paren_group: ($) => seq("(", $.vesti_content, ")"),
-    sqparen_group: ($) => seq("[", $.vesti_content, "]"),
 
     _math: ($) => choice($.inline_math, $.display_math),
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
@@ -190,7 +165,8 @@ module.exports = grammar({
           ),
         ),
       ),
-    word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
+    //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
+    word: ($) => /[^\s\\%\{\}\$\#&_\^]+/,
     placeholder: ($) => /#+\d/,
     delimiter: ($) => /&/,
     subscript: ($) =>
