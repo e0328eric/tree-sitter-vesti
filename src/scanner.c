@@ -125,7 +125,7 @@ static bool scan_end(TSLexer* lx, ScannerState* st) {
     if (!st->in_block) return false;
     if (lx->get_column(lx) != 0) return false;
     skip_hspace(lx);
-    if (lx->lookahead == '/') return false;
+    if (lx->lookahead == '/' || lx->lookahead == '\\') return false;
     if (is_eol(lx)) return false;
 
     char tmp[1024];
@@ -150,9 +150,10 @@ static bool scan_prefix(TSLexer* lx, ScannerState* st) {
     if (!st->in_block || st->awaiting_content) return false;
     skip_hspace(lx);
 
-    if (lx->lookahead != '/') return false;
+    if (lx->lookahead != '/' && lx->lookahead != '\\') return false;
+    char prefix = lx->lookahead;
     lx->advance(lx, false);
-    if (lx->lookahead != '/') return false;
+    if (lx->lookahead != prefix) return false;
     lx->advance(lx, false);
 
     // Do NOT eat spaces after the backslashes; they belong to code.
