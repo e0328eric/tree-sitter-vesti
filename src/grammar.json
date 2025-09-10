@@ -588,8 +588,8 @@
             "name": "mandantory_arg"
           },
           {
-            "type": "PATTERN",
-            "value": "(\\r)?\\n"
+            "type": "SYMBOL",
+            "name": "brace_group"
           }
         ]
       }

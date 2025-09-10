@@ -113,7 +113,7 @@ module.exports = grammar({
           $.optional_arg,
           $.env_name,
           $.mandantory_arg,
-          /(\r)?\n/,
+          $.brace_group,
         ),
       ),
 
