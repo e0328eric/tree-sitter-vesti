@@ -58,6 +58,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "defun_decl"
+        },
+        {
+          "type": "SYMBOL",
           "name": "pycode_block"
         },
         {
@@ -561,6 +565,35 @@
         }
       ]
     },
+    "defun_decl": {
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "KEYWORD_defun"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "optional_arg"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "env_name"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "mandantory_arg"
+          },
+          {
+            "type": "PATTERN",
+            "value": "(\\r)?\\n"
+          }
+        ]
+      }
+    },
     "pycode_block": {
       "type": "PREC_RIGHT",
       "value": 2,
@@ -702,6 +735,13 @@
       "content": {
         "type": "STRING",
         "value": "endenv"
+      }
+    },
+    "KEYWORD_defun": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "defun"
       }
     },
     "KEYWORD_makeatletter": {

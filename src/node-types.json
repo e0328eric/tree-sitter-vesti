@@ -76,6 +76,33 @@
     }
   },
   {
+    "type": "defun_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_defun",
+          "named": true
+        },
+        {
+          "type": "env_name",
+          "named": true
+        },
+        {
+          "type": "mandantory_arg",
+          "named": true
+        },
+        {
+          "type": "optional_arg",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "display_math",
     "named": true,
     "fields": {}
@@ -531,6 +558,10 @@
           "named": true
         },
         {
+          "type": "defun_decl",
+          "named": true
+        },
+        {
           "type": "display_math",
           "named": true
         },
@@ -623,6 +654,10 @@
   },
   {
     "type": "KEYWORD_copyfile",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_defun",
     "named": true
   },
   {

@@ -35,6 +35,7 @@ module.exports = grammar({
         $.useenv_decl,
         $.begenv_decl,
         $.endenv_decl,
+        $.defun_decl,
         $.pycode_block,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
@@ -104,6 +105,18 @@ module.exports = grammar({
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
 
+    defun_decl: ($) =>
+      prec.right(
+        1,
+        seq(
+          $.KEYWORD_defun,
+          $.optional_arg,
+          $.env_name,
+          $.mandantory_arg,
+          /(\r)?\n/,
+        ),
+      ),
+
     pycode_block: ($) =>
       prec.right(
         2,
@@ -132,6 +145,7 @@ module.exports = grammar({
     KEYWORD_useenv: ($) => token("useenv"),
     KEYWORD_begenv: ($) => token("begenv"),
     KEYWORD_endenv: ($) => token("endenv"),
+    KEYWORD_defun: ($) => token("defun"),
     KEYWORD_makeatletter: ($) => token("makeatletter"),
     KEYWORD_makeatother: ($) => token("makeatother"),
     KEYWORD_ltx3on: ($) => token("ltx3on"),
