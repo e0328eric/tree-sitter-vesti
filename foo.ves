@@ -1,5 +1,5 @@
 ant and
-pycode FOOBAR
+#py:
 \\print("Hello, World!")
-FOOBAR
+:py#
 

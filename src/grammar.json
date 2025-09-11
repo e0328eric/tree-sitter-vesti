@@ -682,12 +682,16 @@
             "name": "KEYWORD_pycode"
           },
           {
-            "type": "FIELD",
-            "name": "start",
-            "content": {
-              "type": "SYMBOL",
-              "name": "pycode_start"
-            }
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "\n"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "REPEAT1",
@@ -701,12 +705,8 @@
             }
           },
           {
-            "type": "FIELD",
-            "name": "end",
-            "content": {
-              "type": "SYMBOL",
-              "name": "pycode_end"
-            }
+            "type": "SYMBOL",
+            "name": "KEYWORD_endpycode"
           }
         ]
       }
@@ -881,7 +881,14 @@
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "pycode"
+        "value": "%py:"
+      }
+    },
+    "KEYWORD_endpycode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": ":py%"
       }
     },
     "compile_type": {
@@ -1216,23 +1223,11 @@
     {
       "type": "PATTERN",
       "value": "\\s"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "comment"
     }
   ],
   "conflicts": [],
   "precedences": [],
   "externals": [
-    {
-      "type": "SYMBOL",
-      "name": "pycode_start"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "pycode_end"
-    },
     {
       "type": "SYMBOL",
       "name": "pycode_prefix"

@@ -341,16 +341,6 @@
     "type": "pycode_block",
     "named": true,
     "fields": {
-      "end": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "pycode_end",
-            "named": true
-          }
-        ]
-      },
       "line": {
         "multiple": true,
         "required": true,
@@ -360,22 +350,16 @@
             "named": true
           }
         ]
-      },
-      "start": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "pycode_start",
-            "named": true
-          }
-        ]
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "KEYWORD_endpycode",
+          "named": true
+        },
         {
           "type": "KEYWORD_pycode",
           "named": true
@@ -669,6 +653,10 @@
     }
   },
   {
+    "type": "\n",
+    "named": false
+  },
+  {
     "type": "$",
     "named": false
   },
@@ -722,6 +710,10 @@
   },
   {
     "type": "KEYWORD_endenv",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_endpycode",
     "named": true
   },
   {
@@ -801,11 +793,6 @@
     "named": true
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true
-  },
-  {
     "type": "delimiter",
     "named": true
   },
@@ -842,19 +829,11 @@
     "named": true
   },
   {
-    "type": "pycode_end",
-    "named": true
-  },
-  {
     "type": "pycode_line_content",
     "named": true
   },
   {
     "type": "pycode_prefix",
-    "named": true
-  },
-  {
-    "type": "pycode_start",
     "named": true
   },
   {

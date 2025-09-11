@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,17 +6,12 @@
 #include <tree_sitter/parser.h>
 
 enum TokenType {
-    PYCODE_START,
-    PYCODE_END,
     PYCODE_PREFIX,
     PYCODE_LINE_CONTENT,
     PYCODE_BLANKLINE,
 };
 
 typedef struct {
-    char delimiter[1024];
-    uint32_t delimiter_len;
-    bool in_block;
     bool awaiting_content; // true right after PREFIX, expecting LINE_CONTENT
 } ScannerState;
 
@@ -72,82 +68,26 @@ void tree_sitter_vesti_external_scanner_destroy(void* payload) {
 
 void tree_sitter_vesti_external_scanner_reset(void* payload) {
     ScannerState* st = (ScannerState*) payload;
-    st->delimiter_len = 0;
-    st->in_block = false;
     st->awaiting_content = false;
 }
 
 unsigned tree_sitter_vesti_external_scanner_serialize(void* payload, char* buffer) {
     ScannerState* st = (ScannerState*) payload;
-    if (st->delimiter_len > 250) return 0;
     unsigned i = 0;
-    buffer[i++] = (char) st->delimiter_len;
-    memcpy(buffer + i, st->delimiter, st->delimiter_len);
-    i += st->delimiter_len;
-    buffer[i++] = st->in_block ? 1 : 0;
     buffer[i++] = st->awaiting_content ? 1 : 0;
     return i;
 }
 
 void tree_sitter_vesti_external_scanner_deserialize(void* payload, const char* buffer, unsigned length) {
     ScannerState* st = (ScannerState*) payload;
-    st->delimiter_len = 0;
-    st->in_block = false;
     st->awaiting_content = false;
-    if (!buffer || length < 2) return;
+    if (!buffer || length < 1) return;
     unsigned i = 0;
-    uint8_t len = (uint8_t) buffer[i++];
-    if (i + len + 2 > length) return;
-    if (len) {
-        memcpy(st->delimiter, buffer + i, len);
-        st->delimiter_len = len;
-    }
-    i += len;
-    st->in_block = buffer[i++] ? true : false;
     st->awaiting_content = buffer[i++] ? true : false;
 }
 
-static bool scan_start(TSLexer* lx, ScannerState* st) {
-    if (lx->get_column(lx) == 0) return false;
-    if (!(lx->lookahead == ' ' || lx->lookahead == '\t')) return false;
-    skip_hspace(lx);
-
-    st->delimiter_len = read_line_no_line(lx, st->delimiter, sizeof st->delimiter);
-    consume_eol(lx);
-
-    st->in_block = true;
-    st->awaiting_content = false;
-    lx->result_symbol = PYCODE_START;
-    return true;
-}
-
-static bool scan_end(TSLexer* lx, ScannerState* st) {
-    if (!st->in_block) return false;
-    if (lx->get_column(lx) != 0) return false;
-    skip_hspace(lx);
-    if (lx->lookahead == '/' || lx->lookahead == '\\') return false;
-    if (is_eol(lx)) return false;
-
-    char tmp[1024];
-    uint32_t n = read_line_no_space(lx, tmp, sizeof tmp);
-    // Look ahead: if line equals delimiter, consume EOL and emit END
-    if (!line_equals(tmp, n, st->delimiter, st->delimiter_len)) {
-        // Not the end; don't consume EOL here since we already read the text part.
-        // But we *did* advance over the text; that’s fine because END is tried
-        // only when valid_symbols[PYCODE_END] is on and higher priority in scan().
-        // To avoid losing text, we only call scan_end before other tokens.
-        return false;
-    }
-
-    consume_space(lx);
-    st->in_block = false;
-    st->awaiting_content = false;
-    lx->result_symbol = PYCODE_END;
-    return true;
-}
-
 static bool scan_prefix(TSLexer* lx, ScannerState* st) {
-    if (!st->in_block || st->awaiting_content) return false;
+    if (st->awaiting_content) return false;
     skip_hspace(lx);
 
     if (lx->lookahead != '/' && lx->lookahead != '\\') return false;
@@ -163,21 +103,36 @@ static bool scan_prefix(TSLexer* lx, ScannerState* st) {
 }
 
 static bool scan_line_content(TSLexer* lx, ScannerState* st) {
-    if (!st->in_block || !st->awaiting_content) return false;
+    if (!st->awaiting_content) return false;
 
     // Content is everything to end-of-line, INCLUDING newline
-    while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r') {
+    while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r' && lx->lookahead != ':') {
         lx->advance(lx, false);
     }
-    consume_eol(lx);
 
+    if (lx->lookahead == ':') {
+        lx->mark_end(lx);
+        lx->advance(lx, false);
+        if (lx->lookahead != 'p') goto FAILURE;
+        lx->advance(lx, false);
+        if (lx->lookahead != 'y') goto FAILURE;
+        lx->advance(lx, false);
+        if (lx->lookahead != '%') goto FAILURE;
+        goto SUCCESS;
+    }
+
+FAILURE:
+    consume_eol(lx);
+    lx->mark_end(lx);
+
+SUCCESS:
     st->awaiting_content = false;
     lx->result_symbol = PYCODE_LINE_CONTENT;
     return true;
 }
 
 static bool scan_blankline(TSLexer* lx, ScannerState* st) {
-    if (!st->in_block || st->awaiting_content) return false;
+    if (st->awaiting_content) return false;
     if (lx->get_column(lx) != 0) return false;
 
     // whitespace-only line
@@ -199,8 +154,6 @@ bool tree_sitter_vesti_external_scanner_scan(void* payload, TSLexer* lx, const b
     ScannerState* st = (ScannerState*) payload;
 
     // Try in this order to avoid consuming content that should end a block.
-    if (valid[PYCODE_END] && scan_end(lx, st)) return true;
-    if (valid[PYCODE_START] && scan_start(lx, st)) return true;
     if (valid[PYCODE_PREFIX] && scan_prefix(lx, st)) return true;
     if (valid[PYCODE_LINE_CONTENT] && scan_line_content(lx, st)) return true;
     if (valid[PYCODE_BLANKLINE] && scan_blankline(lx, st)) return true;

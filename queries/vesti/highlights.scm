@@ -21,9 +21,8 @@
 ((KEYWORD_nonstopmode) @keyword)
 ((KEYWORD_mathmode) @keyword)
 ((KEYWORD_compty) @keyword)
-((KEYWORD_pycode) @keyword)
-(pycode_block (pycode_start) @keyword)
-(pycode_block (pycode_end)   @keyword)
+((KEYWORD_pycode) @function)
+((KEYWORD_endpycode) @function)
 
 ;; Identifiers
 ((class_pkg_name) @type)
