@@ -76,6 +76,42 @@
     }
   },
   {
+    "type": "defenv_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_defenv",
+          "named": true
+        },
+        {
+          "type": "brace_group",
+          "named": true
+        },
+        {
+          "type": "defenv_optional_arg",
+          "named": true
+        },
+        {
+          "type": "env_name",
+          "named": true
+        },
+        {
+          "type": "optional_arg",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "defenv_optional_arg",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "defun_decl",
     "named": true,
     "fields": {},
@@ -562,6 +598,10 @@
           "named": true
         },
         {
+          "type": "defenv_decl",
+          "named": true
+        },
+        {
           "type": "defun_decl",
           "named": true
         },
@@ -649,6 +689,14 @@
     "named": false
   },
   {
+    "type": "<",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
     "type": "KEYWORD_begenv",
     "named": true
   },
@@ -658,6 +706,10 @@
   },
   {
     "type": "KEYWORD_copyfile",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_defenv",
     "named": true
   },
   {

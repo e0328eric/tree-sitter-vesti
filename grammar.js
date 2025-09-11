@@ -36,6 +36,7 @@ module.exports = grammar({
         $.begenv_decl,
         $.endenv_decl,
         $.defun_decl,
+        $.defenv_decl,
         $.pycode_block,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
@@ -96,23 +97,34 @@ module.exports = grammar({
         seq($.KEYWORD_useenv, $.env_name, repeat($.env_arg), $.brace_group),
       ),
     begenv_decl: ($) =>
-      prec.right(
-        1,
-        seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg), /(\r)?\n/),
-      ),
+      prec.right(1, seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg))),
     endenv_decl: ($) => seq($.KEYWORD_endenv, $.env_name),
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
+    defenv_optional_arg: ($) => seq("<", repeat(/[^\]]/), ">"),
 
     defun_decl: ($) =>
       prec.right(
         1,
         seq(
           $.KEYWORD_defun,
-          $.optional_arg,
+          optional($.optional_arg),
           $.env_name,
           $.mandantory_arg,
+          $.brace_group,
+        ),
+      ),
+
+    defenv_decl: ($) =>
+      prec.right(
+        1,
+        seq(
+          $.KEYWORD_defenv,
+          $.env_name,
+          optional($.optional_arg),
+          optional($.defenv_optional_arg),
+          $.brace_group,
           $.brace_group,
         ),
       ),
@@ -146,6 +158,7 @@ module.exports = grammar({
     KEYWORD_begenv: ($) => token("begenv"),
     KEYWORD_endenv: ($) => token("endenv"),
     KEYWORD_defun: ($) => token("defun"),
+    KEYWORD_defenv: ($) => token("defenv"),
     KEYWORD_makeatletter: ($) => token("makeatletter"),
     KEYWORD_makeatother: ($) => token("makeatother"),
     KEYWORD_ltx3on: ($) => token("ltx3on"),

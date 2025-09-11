@@ -62,6 +62,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "defenv_decl"
+        },
+        {
+          "type": "SYMBOL",
           "name": "pycode_block"
         },
         {
@@ -491,10 +495,6 @@
               "type": "SYMBOL",
               "name": "env_arg"
             }
-          },
-          {
-            "type": "PATTERN",
-            "value": "(\\r)?\\n"
           }
         ]
       }
@@ -565,6 +565,26 @@
         }
       ]
     },
+    "defenv_optional_arg": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "<"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^\\]]"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
     "defun_decl": {
       "type": "PREC_RIGHT",
       "value": 1,
@@ -576,8 +596,16 @@
             "name": "KEYWORD_defun"
           },
           {
-            "type": "SYMBOL",
-            "name": "optional_arg"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "optional_arg"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "SYMBOL",
@@ -586,6 +614,55 @@
           {
             "type": "SYMBOL",
             "name": "mandantory_arg"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "brace_group"
+          }
+        ]
+      }
+    },
+    "defenv_decl": {
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "KEYWORD_defenv"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "env_name"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "optional_arg"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "defenv_optional_arg"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "brace_group"
           },
           {
             "type": "SYMBOL",
@@ -742,6 +819,13 @@
       "content": {
         "type": "STRING",
         "value": "defun"
+      }
+    },
+    "KEYWORD_defenv": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "defenv"
       }
     },
     "KEYWORD_makeatletter": {
