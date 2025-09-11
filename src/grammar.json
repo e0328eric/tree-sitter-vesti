@@ -576,7 +576,7 @@
           "type": "REPEAT",
           "content": {
             "type": "PATTERN",
-            "value": "[^\\]]"
+            "value": "[^>]"
           }
         },
         {
