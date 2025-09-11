@@ -91,6 +91,7 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
     compile_type_decl: ($) =>
       prec.right(2, seq($.KEYWORD_compty, "(", $.filepath, ")")),
+
     useenv_decl: ($) =>
       prec.right(
         1,
@@ -102,7 +103,7 @@ module.exports = grammar({
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
-    defenv_optional_arg: ($) => seq("<", repeat(/[^\]]/), ">"),
+    defenv_optional_arg: ($) => seq("<", repeat(/[^>]/), ">"),
 
     defun_decl: ($) =>
       prec.right(

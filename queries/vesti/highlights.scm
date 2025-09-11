@@ -40,6 +40,7 @@
 ((options) @constant)
 ((mandantory_arg) @constant)
 ((optional_arg) @constant)
+((defenv_optional_arg) @function)
 
 ;; Comments
 ((comment) @comment)
