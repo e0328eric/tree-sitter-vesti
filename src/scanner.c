@@ -106,6 +106,7 @@ static bool scan_line_content(TSLexer* lx, ScannerState* st) {
     if (!st->awaiting_content) return false;
 
     // Content is everything to end-of-line, INCLUDING newline
+FAILURE:
     while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r' && lx->lookahead != ':') {
         lx->advance(lx, false);
     }
@@ -121,7 +122,6 @@ static bool scan_line_content(TSLexer* lx, ScannerState* st) {
         goto SUCCESS;
     }
 
-FAILURE:
     consume_eol(lx);
     lx->mark_end(lx);
 
