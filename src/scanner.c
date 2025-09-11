@@ -117,7 +117,7 @@ static bool scan_line_content(TSLexer* lx, ScannerState* st) {
         lx->advance(lx, false);
         if (lx->lookahead != 'y') goto FAILURE;
         lx->advance(lx, false);
-        if (lx->lookahead != '%') goto FAILURE;
+        if (lx->lookahead != '#') goto FAILURE;
         goto SUCCESS;
     }
 

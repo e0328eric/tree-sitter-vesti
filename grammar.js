@@ -15,7 +15,7 @@ module.exports = grammar({
     $.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
     $.pycode_blankline, // a blank (or whitespace-only) line inside a pycode block$.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
   ],
-  extras: ($) => [/\s/], //, $.comment],
+  extras: ($) => [/\s/, $.comment],
 
   rules: {
     vesti_content: ($) => repeat1($._statement),
@@ -164,8 +164,8 @@ module.exports = grammar({
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
     KEYWORD_mathmode: ($) => token("mathmode"),
     KEYWORD_compty: ($) => token("compty"),
-    KEYWORD_pycode: ($) => token("%py:"),
-    KEYWORD_endpycode: ($) => token(":py%"),
+    KEYWORD_pycode: ($) => token("#py:"),
+    KEYWORD_endpycode: ($) => token(":py#"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

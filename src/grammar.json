@@ -881,14 +881,14 @@
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "%py:"
+        "value": "#py:"
       }
     },
     "KEYWORD_endpycode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": ":py%"
+        "value": ":py#"
       }
     },
     "compile_type": {
@@ -1223,6 +1223,10 @@
     {
       "type": "PATTERN",
       "value": "\\s"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
     }
   ],
   "conflicts": [],

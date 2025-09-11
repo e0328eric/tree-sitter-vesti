@@ -793,6 +793,11 @@
     "named": true
   },
   {
+    "type": "comment",
+    "named": true,
+    "extra": true
+  },
+  {
     "type": "delimiter",
     "named": true
   },
