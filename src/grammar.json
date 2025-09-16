@@ -98,6 +98,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "KEYWORD_textmode"
+        },
+        {
+          "type": "SYMBOL",
           "name": "KEYWORD_mathmode"
         },
         {
@@ -861,6 +865,13 @@
       "content": {
         "type": "STRING",
         "value": "nonstopmode"
+      }
+    },
+    "KEYWORD_textmode": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "textmode"
       }
     },
     "KEYWORD_mathmode": {

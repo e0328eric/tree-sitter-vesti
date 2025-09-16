@@ -562,6 +562,10 @@
           "named": true
         },
         {
+          "type": "KEYWORD_textmode",
+          "named": true
+        },
+        {
           "type": "KEYWORD_useltx3",
           "named": true
         },
@@ -762,6 +766,10 @@
   },
   {
     "type": "KEYWORD_startdoc",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_textmode",
     "named": true
   },
   {
