@@ -6,9 +6,7 @@
 #include <tree_sitter/parser.h>
 
 enum TokenType {
-    PYCODE_PREFIX,
-    PYCODE_LINE_CONTENT,
-    PYCODE_BLANKLINE,
+    JLCODE_LINE_CONTENT,
 };
 
 typedef struct {
@@ -86,25 +84,7 @@ void tree_sitter_vesti_external_scanner_deserialize(void* payload, const char* b
     st->awaiting_content = buffer[i++] ? true : false;
 }
 
-static bool scan_prefix(TSLexer* lx, ScannerState* st) {
-    if (st->awaiting_content) return false;
-    skip_hspace(lx);
-
-    if (lx->lookahead != '/' && lx->lookahead != '\\') return false;
-    char prefix = lx->lookahead;
-    lx->advance(lx, false);
-    if (lx->lookahead != prefix) return false;
-    lx->advance(lx, false);
-
-    // Do NOT eat spaces after the backslashes; they belong to code.
-    st->awaiting_content = true;
-    lx->result_symbol = PYCODE_PREFIX;
-    return true;
-}
-
 static bool scan_line_content(TSLexer* lx, ScannerState* st) {
-    if (!st->awaiting_content) return false;
-
     // Content is everything to end-of-line, INCLUDING newline
 FAILURE:
     while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r' && lx->lookahead != ':') {
@@ -114,9 +94,9 @@ FAILURE:
     if (lx->lookahead == ':') {
         lx->mark_end(lx);
         lx->advance(lx, false);
-        if (lx->lookahead != 'p') goto FAILURE;
+        if (lx->lookahead != 'j') goto FAILURE;
         lx->advance(lx, false);
-        if (lx->lookahead != 'y') goto FAILURE;
+        if (lx->lookahead != 'l') goto FAILURE;
         lx->advance(lx, false);
         if (lx->lookahead != '#') goto FAILURE;
         goto SUCCESS;
@@ -127,36 +107,15 @@ FAILURE:
 
 SUCCESS:
     st->awaiting_content = false;
-    lx->result_symbol = PYCODE_LINE_CONTENT;
+    lx->result_symbol = JLCODE_LINE_CONTENT;
     return true;
-}
-
-static bool scan_blankline(TSLexer* lx, ScannerState* st) {
-    if (st->awaiting_content) return false;
-    if (lx->get_column(lx) != 0) return false;
-
-    // whitespace-only line
-    unsigned advanced = 0;
-    while (lx->lookahead == ' ' || lx->lookahead == '\t') {
-        lx->advance(lx, true);
-        advanced++;
-    }
-    if (lx->lookahead == '\n' || lx->lookahead == '\r') {
-        consume_eol(lx);
-        lx->result_symbol = PYCODE_BLANKLINE;
-        return true;
-    }
-    // If we consumed spaces but it's not newline, that's okay; parser will try other tokens.
-    return false;
 }
 
 bool tree_sitter_vesti_external_scanner_scan(void* payload, TSLexer* lx, const bool* valid) {
     ScannerState* st = (ScannerState*) payload;
 
     // Try in this order to avoid consuming content that should end a block.
-    if (valid[PYCODE_PREFIX] && scan_prefix(lx, st)) return true;
-    if (valid[PYCODE_LINE_CONTENT] && scan_line_content(lx, st)) return true;
-    if (valid[PYCODE_BLANKLINE] && scan_blankline(lx, st)) return true;
+    if (valid[JLCODE_LINE_CONTENT] && scan_line_content(lx, st)) return true;
 
     return false;
 }

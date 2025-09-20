@@ -271,6 +271,52 @@
     "fields": {}
   },
   {
+    "type": "jlcode_block",
+    "named": true,
+    "fields": {
+      "line": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "jlcode_line",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_endpycode",
+          "named": true
+        },
+        {
+          "type": "KEYWORD_pycode",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jlcode_line",
+    "named": true,
+    "fields": {
+      "content": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "jlcode_line_content",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "latex_function",
     "named": true,
     "fields": {},
@@ -332,66 +378,6 @@
       "types": [
         {
           "type": "option_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "pycode_block",
-    "named": true,
-    "fields": {
-      "line": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "pycode_line",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "KEYWORD_endpycode",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_pycode",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "pycode_line",
-    "named": true,
-    "fields": {
-      "content": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "pycode_line_content",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "pycode_blankline",
-          "named": true
-        },
-        {
-          "type": "pycode_prefix",
           "named": true
         }
       ]
@@ -622,6 +608,10 @@
           "named": true
         },
         {
+          "type": "jlcode_block",
+          "named": true
+        },
+        {
           "type": "latex_function",
           "named": true
         },
@@ -631,10 +621,6 @@
         },
         {
           "type": "multipkg_decl",
-          "named": true
-        },
-        {
-          "type": "pycode_block",
           "named": true
         },
         {
@@ -818,6 +804,10 @@
     "named": true
   },
   {
+    "type": "jlcode_line_content",
+    "named": true
+  },
+  {
     "type": "latex_function_name",
     "named": true
   },
@@ -835,18 +825,6 @@
   },
   {
     "type": "placeholder",
-    "named": true
-  },
-  {
-    "type": "pycode_blankline",
-    "named": true
-  },
-  {
-    "type": "pycode_line_content",
-    "named": true
-  },
-  {
-    "type": "pycode_prefix",
     "named": true
   },
   {

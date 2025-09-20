@@ -11,9 +11,7 @@ module.exports = grammar({
   name: "vesti",
 
   externals: ($) => [
-    $.pycode_prefix, // "^\s*\\\\" (two backslashes) at line start (indent allowed)
-    $.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
-    $.pycode_blankline, // a blank (or whitespace-only) line inside a pycode block$.pycode_line_content, // the rest of that line's code INCLUDING its trailing newline
+    $.jlcode_line_content, // the rest of that line's code INCLUDING its trailing newline
   ],
   extras: ($) => [/\s/, $.comment],
 
@@ -34,7 +32,7 @@ module.exports = grammar({
         $.endenv_decl,
         $.defun_decl,
         $.defenv_decl,
-        $.pycode_block,
+        $.jlcode_block,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -128,22 +126,18 @@ module.exports = grammar({
         ),
       ),
 
-    pycode_block: ($) =>
+    jlcode_block: ($) =>
       prec.right(
         2,
         seq(
           $.KEYWORD_pycode,
           optional("\n"),
-          repeat1(field("line", $.pycode_line)),
+          repeat1(field("line", $.jlcode_line)),
           $.KEYWORD_endpycode,
         ),
       ),
 
-    pycode_line: ($) =>
-      choice(
-        seq($.pycode_prefix, field("content", $.pycode_line_content)),
-        $.pycode_blankline,
-      ),
+    jlcode_line: ($) => field("content", $.jlcode_line_content),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
@@ -166,8 +160,8 @@ module.exports = grammar({
     KEYWORD_textmode: ($) => token("textmode"),
     KEYWORD_mathmode: ($) => token("mathmode"),
     KEYWORD_compty: ($) => token("compty"),
-    KEYWORD_pycode: ($) => token("#py:"),
-    KEYWORD_endpycode: ($) => token(":py#"),
+    KEYWORD_pycode: ($) => token("#jl:"),
+    KEYWORD_endpycode: ($) => token(":jl#"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

@@ -66,7 +66,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "pycode_block"
+          "name": "jlcode_block"
         },
         {
           "type": "SYMBOL",
@@ -675,7 +675,7 @@
         ]
       }
     },
-    "pycode_block": {
+    "jlcode_block": {
       "type": "PREC_RIGHT",
       "value": 2,
       "content": {
@@ -704,7 +704,7 @@
               "name": "line",
               "content": {
                 "type": "SYMBOL",
-                "name": "pycode_line"
+                "name": "jlcode_line"
               }
             }
           },
@@ -715,31 +715,13 @@
         ]
       }
     },
-    "pycode_line": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "pycode_prefix"
-            },
-            {
-              "type": "FIELD",
-              "name": "content",
-              "content": {
-                "type": "SYMBOL",
-                "name": "pycode_line_content"
-              }
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "pycode_blankline"
-        }
-      ]
+    "jlcode_line": {
+      "type": "FIELD",
+      "name": "content",
+      "content": {
+        "type": "SYMBOL",
+        "name": "jlcode_line_content"
+      }
     },
     "KEYWORD_docclass": {
       "type": "TOKEN",
@@ -892,14 +874,14 @@
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "#py:"
+        "value": "#jl:"
       }
     },
     "KEYWORD_endpycode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": ":py#"
+        "value": ":jl#"
       }
     },
     "compile_type": {
@@ -1245,15 +1227,7 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "pycode_prefix"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "pycode_line_content"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "pycode_blankline"
+      "name": "jlcode_line_content"
     }
   ],
   "inline": [],
