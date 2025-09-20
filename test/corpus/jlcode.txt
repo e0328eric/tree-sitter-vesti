@@ -11,9 +11,7 @@ print("Hello, World!")
 
 (vesti_content
   (jlcode_block
-    (KEYWORD_pycode)
+    (KEYWORD_jlcode)
     (jlcode_line_content)
-    (jlcode_line_content)
-    (jlcode_line_content)
-    (KEYWORD_endpycode)))
+    (KEYWORD_endjlcode)))
 

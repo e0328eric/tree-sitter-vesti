@@ -10,9 +10,7 @@
 module.exports = grammar({
   name: "vesti",
 
-  externals: ($) => [
-    $.jlcode_line_content, // the rest of that line's code INCLUDING its trailing newline
-  ],
+  externals: ($) => [$.jlcode_line_content],
   extras: ($) => [/\s/, $.comment],
 
   rules: {
@@ -129,12 +127,7 @@ module.exports = grammar({
     jlcode_block: ($) =>
       prec.right(
         2,
-        seq(
-          $.KEYWORD_jlcode,
-          optional("\n"),
-          repeat1($.jlcode_line_content),
-          $.KEYWORD_endjlcode,
-        ),
+        seq($.KEYWORD_jlcode, $.jlcode_line_content, $.KEYWORD_endjlcode),
       ),
 
     KEYWORD_docclass: ($) => token("docclass"),

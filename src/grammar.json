@@ -686,23 +686,8 @@
             "name": "KEYWORD_jlcode"
           },
           {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "\n"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          },
-          {
-            "type": "REPEAT1",
-            "content": {
-              "type": "SYMBOL",
-              "name": "jlcode_line_content"
-            }
+            "type": "SYMBOL",
+            "name": "jlcode_line_content"
           },
           {
             "type": "SYMBOL",

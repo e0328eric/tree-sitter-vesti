@@ -1,121 +1,87 @@
-#include <stdio.h>
+// scanner.c — external scanner for #jl: ... :jl#
+// Emits one token: JL_BLOCK = the payload between the delimiters (may be empty).
+
 #include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
-
-#include <tree_sitter/parser.h>
+#include "tree_sitter/parser.h"
 
 enum TokenType {
-    JLCODE_LINE_CONTENT,
+  JL_BLOCK,
 };
 
-typedef struct {
-    bool awaiting_content; // true right after PREFIX, expecting LINE_CONTENT
-} ScannerState;
-
-static inline void skip_hspace(TSLexer* lx) {
-    while (lx->lookahead == ' ' || lx->lookahead == '\t') lx->advance(lx, true);
+void *tree_sitter_vesti_external_scanner_create(void) {
+  // No state needed.
+  return NULL;
 }
 
-static uint32_t read_line_no_space(TSLexer* lx, char* buf, uint32_t cap) {
-    uint32_t n = 0;
-    while (lx->lookahead && lx->lookahead != ' ' && lx->lookahead != '\n' && lx->lookahead != '\r') {
-        if (n + 1 < cap) buf[n++] = (char) lx->lookahead;
-        lx->advance(lx, false);
-    }
-    buf[n] = '\0';
-    return n;
+void tree_sitter_vesti_external_scanner_destroy(void *payload) {
+  // No state to free.
+  (void)payload;
 }
 
-static uint32_t read_line_no_line(TSLexer* lx, char* buf, uint32_t cap) {
-    uint32_t n = 0;
-    while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r') {
-        if (n + 1 < cap) buf[n++] = (char) lx->lookahead;
-        lx->advance(lx, false);
-    }
-    buf[n] = '\0';
-    return n;
+unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
+  (void)payload; (void)buffer;
+  return 0; // stateless
 }
 
-static bool is_eol(TSLexer* lx) {
-    return lx->lookahead == '\r' || lx->lookahead == '\n';
+void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
+  (void)payload; (void)buffer; (void)length;
+  // stateless
 }
 
-static void consume_eol(TSLexer* lx) {
-    if (lx->lookahead == '\r') lx->advance(lx, false);
-    if (lx->lookahead == '\n') lx->advance(lx, false);
+static inline void advance(TSLexer *lexer) {
+  lexer->advance(lexer, false); // consume as content
 }
 
-static void consume_space(TSLexer* lx) {
-    if (lx->lookahead == '\r') lx->advance(lx, false);
-    if (lx->lookahead == '\n') lx->advance(lx, false);
-    if (lx->lookahead == ' ') lx->advance(lx, false);
-}
+bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+  (void)payload;
 
-static bool line_equals(const char* a, uint32_t na, const char* b, uint32_t nb) {
-    return na == nb && memcmp(a, b, na) == 0;
-}
-
-void* tree_sitter_vesti_external_scanner_create(void) {
-    return calloc(1, sizeof(ScannerState));
-}
-
-void tree_sitter_vesti_external_scanner_destroy(void* payload) {
-    free(payload);
-}
-
-void tree_sitter_vesti_external_scanner_reset(void* payload) {
-    ScannerState* st = (ScannerState*) payload;
-    st->awaiting_content = false;
-}
-
-unsigned tree_sitter_vesti_external_scanner_serialize(void* payload, char* buffer) {
-    ScannerState* st = (ScannerState*) payload;
-    unsigned i = 0;
-    buffer[i++] = st->awaiting_content ? 1 : 0;
-    return i;
-}
-
-void tree_sitter_vesti_external_scanner_deserialize(void* payload, const char* buffer, unsigned length) {
-    ScannerState* st = (ScannerState*) payload;
-    st->awaiting_content = false;
-    if (!buffer || length < 1) return;
-    unsigned i = 0;
-    st->awaiting_content = buffer[i++] ? true : false;
-}
-
-static bool scan_line_content(TSLexer* lx, ScannerState* st) {
-    // Content is everything to end-of-line, INCLUDING newline
-FAILURE:
-    while (lx->lookahead && lx->lookahead != '\n' && lx->lookahead != '\r' && lx->lookahead != ':') {
-        lx->advance(lx, false);
-    }
-
-    if (lx->lookahead == ':') {
-        lx->mark_end(lx);
-        lx->advance(lx, false);
-        if (lx->lookahead != 'j') goto FAILURE;
-        lx->advance(lx, false);
-        if (lx->lookahead != 'l') goto FAILURE;
-        lx->advance(lx, false);
-        if (lx->lookahead != '#') goto FAILURE;
-        goto SUCCESS;
-    }
-
-    consume_eol(lx);
-    lx->mark_end(lx);
-
-SUCCESS:
-    st->awaiting_content = false;
-    lx->result_symbol = JLCODE_LINE_CONTENT;
-    return true;
-}
-
-bool tree_sitter_vesti_external_scanner_scan(void* payload, TSLexer* lx, const bool* valid) {
-    ScannerState* st = (ScannerState*) payload;
-
-    // Try in this order to avoid consuming content that should end a block.
-    if (valid[JLCODE_LINE_CONTENT] && scan_line_content(lx, st)) return true;
-
+  if (!valid_symbols[JL_BLOCK]) {
     return false;
+  }
+
+  // We are called right after matching "#jl:" from the grammar.
+  // Produce JL_BLOCK up to *before* the next ":jl#" or EOF.
+
+  lexer->result_symbol = JL_BLOCK;
+
+  // Allow empty payload: token can end immediately.
+  lexer->mark_end(lexer);
+
+  for (;;) {
+    if (lexer->eof(lexer)) {
+      // End of file -> emit whatever we have so far as payload.
+      return true;
+    }
+
+    if (lexer->lookahead == ':') {
+      // We *might* be at the start of ":jl#".
+      // Mark end BEFORE ':' so the token ends right before the closing delimiter.
+      lexer->mark_end(lexer);
+
+      // Look ahead, consuming temporarily. If this is the closing marker,
+      // returning `true` will emit content up to the last mark_end,
+      // and parsing will resume at the ':' (the closing marker will be lexed next).
+      advance(lexer); // seen ':'
+      if (lexer->lookahead == 'j') {
+        advance(lexer); // seen 'j'
+        if (lexer->lookahead == 'l') {
+          advance(lexer); // seen 'l'
+          if (lexer->lookahead == '#') {
+            // Found ":jl#". DO NOT consume '#'.
+            // Because we marked end before the ':', the payload excludes the delimiter.
+            return true;
+          }
+        }
+      }
+
+      // Not actually a closing delimiter; the consumed chars are part of the payload.
+      // Continue scanning from current position.
+      continue;
+    }
+
+    // Regular character, just consume.
+    advance(lexer);
+  }
 }
+
