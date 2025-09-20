@@ -1,50 +1,33 @@
 ================================================================================
-Pycode (single line)
+Jlcode (single line)
 ================================================================================
 
-#py://print("Hello, World!"):py#
+#jl:print("Hello, World!"):jl#
 
 --------------------------------------------------------------------------------
 
 (vesti_content
-  (pycode_block
+  (jlcode_block
     (KEYWORD_pycode)
-    (pycode_line
-      (pycode_prefix)
-      (pycode_line_content))
+    (jlcode_line_content)
     (KEYWORD_endpycode)))
 
 ================================================================================
 Pycode (multiple lines)
 ================================================================================
 
-#py:
-    //import vesti
-
-//print("Hello, World!")
-            //if x == 3:
-//    pass
-:py#
+#jl:
+import .Vesti
+print("Hello, World!")
+:jl#
 
 --------------------------------------------------------------------------------
 
 (vesti_content
-  (pycode_block
+  (jlcode_block
     (KEYWORD_pycode)
-    (pycode_line
-      (pycode_prefix)
-      (pycode_line_content))
-    (pycode_line
-      (pycode_blankline))
-    (pycode_line
-      (pycode_prefix)
-      (pycode_line_content))
-    (pycode_line
-      (pycode_prefix)
-      (pycode_line_content))
-    (pycode_line
-      (pycode_prefix)
-      (pycode_line_content))
+    (jlcode_line_content)
+    (jlcode_line_content)
     (KEYWORD_endpycode)))
 
 

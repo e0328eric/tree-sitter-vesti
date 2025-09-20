@@ -132,12 +132,10 @@ module.exports = grammar({
         seq(
           $.KEYWORD_pycode,
           optional("\n"),
-          repeat1(field("line", $.jlcode_line)),
+          repeat1($.jlcode_line_content),
           $.KEYWORD_endpycode,
         ),
       ),
-
-    jlcode_line: ($) => field("content", $.jlcode_line_content),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),

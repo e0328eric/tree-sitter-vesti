@@ -273,18 +273,7 @@
   {
     "type": "jlcode_block",
     "named": true,
-    "fields": {
-      "line": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "jlcode_line",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
       "required": true,
@@ -296,24 +285,12 @@
         {
           "type": "KEYWORD_pycode",
           "named": true
+        },
+        {
+          "type": "jlcode_line_content",
+          "named": true
         }
       ]
-    }
-  },
-  {
-    "type": "jlcode_line",
-    "named": true,
-    "fields": {
-      "content": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "jlcode_line_content",
-            "named": true
-          }
-        ]
-      }
     }
   },
   {
