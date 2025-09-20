@@ -1121,7 +1121,7 @@
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "[\\p{L}@/\\.]+"
+        "value": "[\\p{L}@/\\.-_ ]+"
       }
     },
     "env_name": {
