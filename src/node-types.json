@@ -279,11 +279,11 @@
       "required": true,
       "types": [
         {
-          "type": "KEYWORD_endpycode",
+          "type": "KEYWORD_endjlcode",
           "named": true
         },
         {
-          "type": "KEYWORD_pycode",
+          "type": "KEYWORD_jlcode",
           "named": true
         },
         {
@@ -680,7 +680,7 @@
     "named": true
   },
   {
-    "type": "KEYWORD_endpycode",
+    "type": "KEYWORD_endjlcode",
     "named": true
   },
   {
@@ -697,6 +697,10 @@
   },
   {
     "type": "KEYWORD_importves",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_jlcode",
     "named": true
   },
   {
@@ -721,10 +725,6 @@
   },
   {
     "type": "KEYWORD_nonstopmode",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_pycode",
     "named": true
   },
   {

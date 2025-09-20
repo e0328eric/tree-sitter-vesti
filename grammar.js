@@ -130,10 +130,10 @@ module.exports = grammar({
       prec.right(
         2,
         seq(
-          $.KEYWORD_pycode,
+          $.KEYWORD_jlcode,
           optional("\n"),
           repeat1($.jlcode_line_content),
-          $.KEYWORD_endpycode,
+          $.KEYWORD_endjlcode,
         ),
       ),
 
@@ -158,8 +158,8 @@ module.exports = grammar({
     KEYWORD_textmode: ($) => token("textmode"),
     KEYWORD_mathmode: ($) => token("mathmode"),
     KEYWORD_compty: ($) => token("compty"),
-    KEYWORD_pycode: ($) => token("#jl:"),
-    KEYWORD_endpycode: ($) => token(":jl#"),
+    KEYWORD_jlcode: ($) => token("#jl:"),
+    KEYWORD_endjlcode: ($) => token(":jl#"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

@@ -683,7 +683,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "KEYWORD_pycode"
+            "name": "KEYWORD_jlcode"
           },
           {
             "type": "CHOICE",
@@ -706,7 +706,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "KEYWORD_endpycode"
+            "name": "KEYWORD_endjlcode"
           }
         ]
       }
@@ -858,14 +858,14 @@
         "value": "compty"
       }
     },
-    "KEYWORD_pycode": {
+    "KEYWORD_jlcode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
         "value": "#jl:"
       }
     },
-    "KEYWORD_endpycode": {
+    "KEYWORD_endjlcode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",

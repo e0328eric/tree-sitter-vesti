@@ -1,19 +1,5 @@
 ================================================================================
-Jlcode (single line)
-================================================================================
-
-#jl:print("Hello, World!"):jl#
-
---------------------------------------------------------------------------------
-
-(vesti_content
-  (jlcode_block
-    (KEYWORD_pycode)
-    (jlcode_line_content)
-    (KEYWORD_endpycode)))
-
-================================================================================
-Pycode (multiple lines)
+Jlcode
 ================================================================================
 
 #jl:
@@ -28,6 +14,6 @@ print("Hello, World!")
     (KEYWORD_pycode)
     (jlcode_line_content)
     (jlcode_line_content)
+    (jlcode_line_content)
     (KEYWORD_endpycode)))
-
 
