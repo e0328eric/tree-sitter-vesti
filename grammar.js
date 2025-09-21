@@ -126,7 +126,7 @@ module.exports = grammar({
 
     jlcode_block: ($) =>
       prec.right(
-        2,
+        1,
         seq($.KEYWORD_jlcode, $.jlcode_line_content, $.KEYWORD_endjlcode),
       ),
 

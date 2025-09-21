@@ -677,7 +677,7 @@
     },
     "jlcode_block": {
       "type": "PREC_RIGHT",
-      "value": 2,
+      "value": 1,
       "content": {
         "type": "SEQ",
         "members": [
