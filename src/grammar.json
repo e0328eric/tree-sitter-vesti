@@ -822,14 +822,14 @@
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "textmode"
+        "value": "txtmd"
       }
     },
     "KEYWORD_mathmode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "mathmode"
+        "value": "mthmd"
       }
     },
     "KEYWORD_compty": {

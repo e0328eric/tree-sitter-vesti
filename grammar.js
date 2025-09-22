@@ -144,8 +144,8 @@ module.exports = grammar({
     KEYWORD_ltx3on: ($) => token("ltx3on"),
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_nonstopmode: ($) => token("nonstopmode"),
-    KEYWORD_textmode: ($) => token("textmode"),
-    KEYWORD_mathmode: ($) => token("mathmode"),
+    KEYWORD_textmode: ($) => token("txtmd"),
+    KEYWORD_mathmode: ($) => token("mthmd"),
     KEYWORD_compty: ($) => token("compty"),
     KEYWORD_jlcode: ($) => token("#jl:"),
 
