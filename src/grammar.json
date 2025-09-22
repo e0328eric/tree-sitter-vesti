@@ -676,25 +676,21 @@
       }
     },
     "jlcode_block": {
-      "type": "PREC_RIGHT",
-      "value": 1,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "KEYWORD_jlcode"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "jlcode_line_content"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "KEYWORD_endjlcode"
-          }
-        ]
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_jlcode"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "jlcode_line_content"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_endjlcode"
+        }
+      ]
     },
     "KEYWORD_docclass": {
       "type": "TOKEN",
