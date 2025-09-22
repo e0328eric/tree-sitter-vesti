@@ -684,11 +684,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "jlcode_line_content"
+          "name": "jlcode_payload"
         },
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_endjlcode"
+          "name": "jlcode_end"
         }
       ]
     },
@@ -844,13 +844,6 @@
       "content": {
         "type": "STRING",
         "value": "#jl:"
-      }
-    },
-    "KEYWORD_endjlcode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": ":jl#"
       }
     },
     "compile_type": {
@@ -1196,7 +1189,11 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "jlcode_line_content"
+      "name": "jlcode_payload"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "jlcode_end"
     }
   ],
   "inline": [],

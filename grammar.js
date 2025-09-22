@@ -10,7 +10,7 @@
 module.exports = grammar({
   name: "vesti",
 
-  externals: ($) => [$.jlcode_line_content],
+  externals: ($) => [$.jlcode_payload, $.jlcode_end],
   extras: ($) => [/\s/, $.comment],
 
   rules: {
@@ -124,8 +124,7 @@ module.exports = grammar({
         ),
       ),
 
-    jlcode_block: ($) =>
-        seq($.KEYWORD_jlcode, $.jlcode_line_content, $.KEYWORD_endjlcode),
+    jlcode_block: ($) => seq($.KEYWORD_jlcode, $.jlcode_payload, $.jlcode_end),
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
@@ -149,7 +148,6 @@ module.exports = grammar({
     KEYWORD_mathmode: ($) => token("mathmode"),
     KEYWORD_compty: ($) => token("compty"),
     KEYWORD_jlcode: ($) => token("#jl:"),
-    KEYWORD_endjlcode: ($) => token(":jl#"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

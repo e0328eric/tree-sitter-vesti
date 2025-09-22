@@ -279,15 +279,15 @@
       "required": true,
       "types": [
         {
-          "type": "KEYWORD_endjlcode",
-          "named": true
-        },
-        {
           "type": "KEYWORD_jlcode",
           "named": true
         },
         {
-          "type": "jlcode_line_content",
+          "type": "jlcode_end",
+          "named": true
+        },
+        {
+          "type": "jlcode_payload",
           "named": true
         }
       ]
@@ -676,10 +676,6 @@
     "named": true
   },
   {
-    "type": "KEYWORD_endjlcode",
-    "named": true
-  },
-  {
     "type": "KEYWORD_getfp",
     "named": true
   },
@@ -777,7 +773,11 @@
     "named": true
   },
   {
-    "type": "jlcode_line_content",
+    "type": "jlcode_end",
+    "named": true
+  },
+  {
+    "type": "jlcode_payload",
     "named": true
   },
   {

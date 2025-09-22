@@ -1,87 +1,92 @@
-// scanner.c — external scanner for #jl: ... :jl#
-// Emits one token: JL_BLOCK = the payload between the delimiters (may be empty).
-
+// scanner.c
 #include <stdbool.h>
 #include <string.h>
 #include "tree_sitter/parser.h"
 
 enum TokenType {
-  JL_BLOCK,
+  JLCODE_PAYLOAD,
+  JLCODE_END,
 };
 
+// --- Optional tiny state to help with backtracking friendliness.
+// We record whether we previously stopped at a ':' that was NOT followed by "jl#"
+// at this byte position, so the next time we won't stop there again.
+typedef struct {
+  bool suppress_stop_at_colon;
+} ScannerState;
+
 void *tree_sitter_vesti_external_scanner_create(void) {
-  // No state needed.
-  return NULL;
+  ScannerState *st = (ScannerState *)calloc(1, sizeof(ScannerState));
+  return st;
 }
 
 void tree_sitter_vesti_external_scanner_destroy(void *payload) {
-  // No state to free.
-  (void)payload;
+  free(payload);
 }
 
 unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
-  (void)payload; (void)buffer;
-  return 0; // stateless
+  ScannerState *st = (ScannerState *)payload;
+  buffer[0] = (char)(st->suppress_stop_at_colon ? 1 : 0);
+  return 1;
 }
 
 void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-  (void)payload; (void)buffer; (void)length;
-  // stateless
+  ScannerState *st = (ScannerState *)payload;
+  st->suppress_stop_at_colon = (length >= 1 && buffer[0] == 1);
 }
 
-static inline void advance(TSLexer *lexer) {
-  lexer->advance(lexer, false); // consume as content
-}
+static inline void advance_as_content(TSLexer *lexer) { lexer->advance(lexer, false); }
+static inline void skip(TSLexer *lexer)               { lexer->advance(lexer, true);  }
 
 bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
-  (void)payload;
+  ScannerState *st = (ScannerState *)payload;
 
-  if (!valid_symbols[JL_BLOCK]) {
-    return false;
+  // END token branch: consume exactly ":jl#"
+  if (valid_symbols[JLCODE_END]) {
+    if (lexer->lookahead != ':') return false;
+    skip(lexer);                        // ':'
+    if (lexer->lookahead != 'j') return false;
+    skip(lexer);                        // 'j'
+    if (lexer->lookahead != 'l') return false;
+    skip(lexer);                        // 'l'
+    if (lexer->lookahead != '#') return false;
+    skip(lexer);                        // '#'
+
+    lexer->result_symbol = JLCODE_END;
+    // We successfully consumed the end marker; next payload colon checks are allowed again.
+    st->suppress_stop_at_colon = false;
+    return true;
   }
 
-  // We are called right after matching "#jl:" from the grammar.
-  // Produce JL_BLOCK up to *before* the next ":jl#" or EOF.
+  // PAYLOAD token branch: read until (just before) ":jl#" or EOF.
+  if (!valid_symbols[JLCODE_PAYLOAD]) return false;
 
-  lexer->result_symbol = JL_BLOCK;
+  lexer->result_symbol = JLCODE_PAYLOAD;
 
-  // Allow empty payload: token can end immediately.
+  // Allow empty payload immediately.
   lexer->mark_end(lexer);
 
   for (;;) {
     if (lexer->eof(lexer)) {
-      // End of file -> emit whatever we have so far as payload.
-      return true;
+      return true;  // emit whatever we accumulated
     }
 
     if (lexer->lookahead == ':') {
-      // We *might* be at the start of ":jl#".
-      // Mark end BEFORE ':' so the token ends right before the closing delimiter.
-      lexer->mark_end(lexer);
-
-      // Look ahead, consuming temporarily. If this is the closing marker,
-      // returning `true` will emit content up to the last mark_end,
-      // and parsing will resume at the ':' (the closing marker will be lexed next).
-      advance(lexer); // seen ':'
-      if (lexer->lookahead == 'j') {
-        advance(lexer); // seen 'j'
-        if (lexer->lookahead == 'l') {
-          advance(lexer); // seen 'l'
-          if (lexer->lookahead == '#') {
-            // Found ":jl#". DO NOT consume '#'.
-            // Because we marked end before the ':', the payload excludes the delimiter.
-            return true;
-          }
-        }
+      // Potential end marker. We MUST NOT consume here.
+      // If the parser wants END next and it's present, the END branch above
+      // will run immediately after this token and consume ":jl#".
+      // Mark token end BEFORE ':' so payload excludes the delimiter.
+      if (!st->suppress_stop_at_colon) {
+        lexer->mark_end(lexer);
+        return true;                  // stop payload right before ':'
       }
-
-      // Not actually a closing delimiter; the consumed chars are part of the payload.
-      // Continue scanning from current position.
+      // If we previously learned this colon wasn't an end, just take it as content.
+      advance_as_content(lexer);
       continue;
     }
 
-    // Regular character, just consume.
-    advance(lexer);
+    // Regular character: consume as payload content
+    advance_as_content(lexer);
   }
 }
 
