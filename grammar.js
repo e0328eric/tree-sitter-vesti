@@ -37,9 +37,7 @@ module.exports = grammar({
         $.KEYWORD_makeatother,
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
-        $.KEYWORD_nonstopmode,
-        $.KEYWORD_textmode,
-        $.KEYWORD_mathmode,
+        $.attributes,
         $.singleline_raw_latex,
         $.multiline_raw_latex,
         $._text_content,
@@ -126,6 +124,8 @@ module.exports = grammar({
 
     jlcode_block: ($) => seq($.KEYWORD_jlcode, $.jlcode_payload, $.jlcode_end),
 
+    attributes: ($) => /#+[a-zA-Z0-9]+/,
+
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
     KEYWORD_importmod: ($) => token("importmod"),
@@ -143,9 +143,6 @@ module.exports = grammar({
     KEYWORD_makeatother: ($) => token("makeatother"),
     KEYWORD_ltx3on: ($) => token("ltx3on"),
     KEYWORD_ltx3off: ($) => token("ltx3off"),
-    KEYWORD_nonstopmode: ($) => token("nonstopmode"),
-    KEYWORD_textmode: ($) => token("txtmd"),
-    KEYWORD_mathmode: ($) => token("mthmd"),
     KEYWORD_compty: ($) => token("compty"),
     KEYWORD_jlcode: ($) => token("#jl:"),
 
@@ -163,19 +160,10 @@ module.exports = grammar({
 
     text: ($) =>
       prec.right(
-        repeat1(
-          choice(
-            $.word,
-            $.delimiter,
-            $.placeholder,
-            $.subscript,
-            $.superscript,
-          ),
-        ),
+        repeat1(choice($.word, $.delimiter, $.subscript, $.superscript)),
       ),
     //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
     word: ($) => /[^\s\\%\{\}\$\#&_\^]+/,
-    placeholder: ($) => /#+\d/,
     delimiter: ($) => /&/,
     subscript: ($) =>
       seq("_", choice($.brace_group, $.letter, $.latex_function)),

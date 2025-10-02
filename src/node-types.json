@@ -442,10 +442,6 @@
           "named": true
         },
         {
-          "type": "placeholder",
-          "named": true
-        },
-        {
           "type": "subscript",
           "named": true
         },
@@ -513,23 +509,15 @@
           "named": true
         },
         {
-          "type": "KEYWORD_mathmode",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_nonstopmode",
-          "named": true
-        },
-        {
           "type": "KEYWORD_startdoc",
           "named": true
         },
         {
-          "type": "KEYWORD_textmode",
+          "type": "KEYWORD_useltx3",
           "named": true
         },
         {
-          "type": "KEYWORD_useltx3",
+          "type": "attributes",
           "named": true
         },
         {
@@ -712,19 +700,7 @@
     "named": true
   },
   {
-    "type": "KEYWORD_mathmode",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_nonstopmode",
-    "named": true
-  },
-  {
     "type": "KEYWORD_startdoc",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_textmode",
     "named": true
   },
   {
@@ -750,6 +726,10 @@
   {
     "type": "_",
     "named": false
+  },
+  {
+    "type": "attributes",
+    "named": true
   },
   {
     "type": "class_pkg_name",
@@ -794,10 +774,6 @@
   },
   {
     "type": "option_name",
-    "named": true
-  },
-  {
-    "type": "placeholder",
     "named": true
   },
   {

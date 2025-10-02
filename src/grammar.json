@@ -94,15 +94,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_nonstopmode"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_textmode"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_mathmode"
+          "name": "attributes"
         },
         {
           "type": "SYMBOL",
@@ -692,6 +684,10 @@
         }
       ]
     },
+    "attributes": {
+      "type": "PATTERN",
+      "value": "#+[a-zA-Z0-9]+"
+    },
     "KEYWORD_docclass": {
       "type": "TOKEN",
       "content": {
@@ -809,27 +805,6 @@
       "content": {
         "type": "STRING",
         "value": "ltx3off"
-      }
-    },
-    "KEYWORD_nonstopmode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "nonstopmode"
-      }
-    },
-    "KEYWORD_textmode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "txtmd"
-      }
-    },
-    "KEYWORD_mathmode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "mthmd"
       }
     },
     "KEYWORD_compty": {
@@ -992,10 +967,6 @@
             },
             {
               "type": "SYMBOL",
-              "name": "placeholder"
-            },
-            {
-              "type": "SYMBOL",
               "name": "subscript"
             },
             {
@@ -1009,10 +980,6 @@
     "word": {
       "type": "PATTERN",
       "value": "[^\\s\\\\%\\{\\}\\$\\#&_\\^]+"
-    },
-    "placeholder": {
-      "type": "PATTERN",
-      "value": "#+\\d"
     },
     "delimiter": {
       "type": "PATTERN",
