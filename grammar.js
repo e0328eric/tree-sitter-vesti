@@ -124,7 +124,7 @@ module.exports = grammar({
 
     jlcode_block: ($) => seq($.KEYWORD_jlcode, $.jlcode_payload, $.jlcode_end),
 
-    attributes: ($) => /#+[a-zA-Z0-9]+/,
+    attributes: ($) => /#[a-zA-Z0-9][a-zA-Z0-9_]*/,
 
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),

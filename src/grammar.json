@@ -686,7 +686,7 @@
     },
     "attributes": {
       "type": "PATTERN",
-      "value": "#+[a-zA-Z0-9]+"
+      "value": "#[a-zA-Z0-9][a-zA-Z0-9_]*"
     },
     "KEYWORD_docclass": {
       "type": "TOKEN",
