@@ -66,7 +66,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "jlcode_block"
+          "name": "luacode_block"
         },
         {
           "type": "SYMBOL",
@@ -667,20 +667,20 @@
         ]
       }
     },
-    "jlcode_block": {
+    "luacode_block": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_jlcode"
+          "name": "KEYWORD_luacode"
         },
         {
           "type": "SYMBOL",
-          "name": "jlcode_payload"
+          "name": "luacode_payload"
         },
         {
           "type": "SYMBOL",
-          "name": "jlcode_end"
+          "name": "luacode_end"
         }
       ]
     },
@@ -814,11 +814,11 @@
         "value": "compty"
       }
     },
-    "KEYWORD_jlcode": {
+    "KEYWORD_luacode": {
       "type": "TOKEN",
       "content": {
         "type": "STRING",
-        "value": "#jl:"
+        "value": "#lu:"
       }
     },
     "compile_type": {
@@ -1156,11 +1156,11 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "jlcode_payload"
+      "name": "luacode_payload"
     },
     {
       "type": "SYMBOL",
-      "name": "jlcode_end"
+      "name": "luacode_end"
     }
   ],
   "inline": [],

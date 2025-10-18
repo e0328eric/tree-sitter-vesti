@@ -4,8 +4,8 @@
 #include "tree_sitter/parser.h"
 
 enum TokenType {
-  JLCODE_PAYLOAD,
-  JLCODE_END,
+  LUACODE_PAYLOAD,
+  LUACODE_END,
 };
 
 // --- Optional tiny state to help with backtracking friendliness.
@@ -41,27 +41,27 @@ static inline void skip(TSLexer *lexer)               { lexer->advance(lexer, tr
 bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   ScannerState *st = (ScannerState *)payload;
 
-  // END token branch: consume exactly ":jl#"
-  if (valid_symbols[JLCODE_END]) {
+  // END token branch: consume exactly ":lu#"
+  if (valid_symbols[LUACODE_END]) {
     if (lexer->lookahead != ':') return false;
     skip(lexer);                        // ':'
-    if (lexer->lookahead != 'j') return false;
-    skip(lexer);                        // 'j'
     if (lexer->lookahead != 'l') return false;
     skip(lexer);                        // 'l'
+    if (lexer->lookahead != 'u') return false;
+    skip(lexer);                        // 'u'
     if (lexer->lookahead != '#') return false;
     skip(lexer);                        // '#'
 
-    lexer->result_symbol = JLCODE_END;
+    lexer->result_symbol = LUACODE_END;
     // We successfully consumed the end marker; next payload colon checks are allowed again.
     st->suppress_stop_at_colon = false;
     return true;
   }
 
-  // PAYLOAD token branch: read until (just before) ":jl#" or EOF.
-  if (!valid_symbols[JLCODE_PAYLOAD]) return false;
+  // PAYLOAD token branch: read until (just before) ":lu#" or EOF.
+  if (!valid_symbols[LUACODE_PAYLOAD]) return false;
 
-  lexer->result_symbol = JLCODE_PAYLOAD;
+  lexer->result_symbol = LUACODE_PAYLOAD;
 
   // Allow empty payload immediately.
   lexer->mark_end(lexer);
@@ -74,7 +74,7 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lexer, cons
     if (lexer->lookahead == ':') {
       // Potential end marker. We MUST NOT consume here.
       // If the parser wants END next and it's present, the END branch above
-      // will run immediately after this token and consume ":jl#".
+      // will run immediately after this token and consume ":lu#".
       // Mark token end BEFORE ':' so payload excludes the delimiter.
       if (!st->suppress_stop_at_colon) {
         lexer->mark_end(lexer);

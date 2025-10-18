@@ -10,7 +10,7 @@
 module.exports = grammar({
   name: "vesti",
 
-  externals: ($) => [$.jlcode_payload, $.jlcode_end],
+  externals: ($) => [$.luacode_payload, $.luacode_end],
   extras: ($) => [/\s/, $.comment],
 
   rules: {
@@ -30,7 +30,7 @@ module.exports = grammar({
         $.endenv_decl,
         $.defun_decl,
         $.defenv_decl,
-        $.jlcode_block,
+        $.luacode_block,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -122,7 +122,8 @@ module.exports = grammar({
         ),
       ),
 
-    jlcode_block: ($) => seq($.KEYWORD_jlcode, $.jlcode_payload, $.jlcode_end),
+    luacode_block: ($) =>
+      seq($.KEYWORD_luacode, $.luacode_payload, $.luacode_end),
 
     attributes: ($) => /#[a-zA-Z0-9][a-zA-Z0-9_]*/,
 
@@ -144,7 +145,7 @@ module.exports = grammar({
     KEYWORD_ltx3on: ($) => token("ltx3on"),
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_compty: ($) => token("compty"),
-    KEYWORD_jlcode: ($) => token("#jl:"),
+    KEYWORD_luacode: ($) => token("#lu:"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),

@@ -271,29 +271,6 @@
     "fields": {}
   },
   {
-    "type": "jlcode_block",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "KEYWORD_jlcode",
-          "named": true
-        },
-        {
-          "type": "jlcode_end",
-          "named": true
-        },
-        {
-          "type": "jlcode_payload",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "latex_function",
     "named": true,
     "fields": {},
@@ -307,6 +284,29 @@
         },
         {
           "type": "latex_function_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "luacode_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_luacode",
+          "named": true
+        },
+        {
+          "type": "luacode_end",
+          "named": true
+        },
+        {
+          "type": "luacode_payload",
           "named": true
         }
       ]
@@ -573,11 +573,11 @@
           "named": true
         },
         {
-          "type": "jlcode_block",
+          "type": "latex_function",
           "named": true
         },
         {
-          "type": "latex_function",
+          "type": "luacode_block",
           "named": true
         },
         {
@@ -680,15 +680,15 @@
     "named": true
   },
   {
-    "type": "KEYWORD_jlcode",
-    "named": true
-  },
-  {
     "type": "KEYWORD_ltx3off",
     "named": true
   },
   {
     "type": "KEYWORD_ltx3on",
+    "named": true
+  },
+  {
+    "type": "KEYWORD_luacode",
     "named": true
   },
   {
@@ -753,19 +753,19 @@
     "named": true
   },
   {
-    "type": "jlcode_end",
-    "named": true
-  },
-  {
-    "type": "jlcode_payload",
-    "named": true
-  },
-  {
     "type": "latex_function_name",
     "named": true
   },
   {
     "type": "letter",
+    "named": true
+  },
+  {
+    "type": "luacode_end",
+    "named": true
+  },
+  {
+    "type": "luacode_payload",
     "named": true
   },
   {
