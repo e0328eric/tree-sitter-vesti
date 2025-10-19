@@ -1,6 +1,6 @@
-// scanner.c
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 #include "tree_sitter/parser.h"
 
 enum TokenType {
@@ -8,85 +8,95 @@ enum TokenType {
   LUACODE_END,
 };
 
-// --- Optional tiny state to help with backtracking friendliness.
-// We record whether we previously stopped at a ':' that was NOT followed by "jl#"
-// at this byte position, so the next time we won't stop there again.
-typedef struct {
-  bool suppress_stop_at_colon;
-} ScannerState;
+static inline void adv(TSLexer *lx, bool skip) { lx->advance(lx, skip); }
+static inline void advk(TSLexer *lx)           { lx->advance(lx, false); } // keep
+static inline bool is_space(int c)             { return c == ' ' || c == '\t'; }
+static inline bool is_nl(int c)                { return c == '\n' || c == '\r'; }
 
-void *tree_sitter_vesti_external_scanner_create(void) {
-  ScannerState *st = (ScannerState *)calloc(1, sizeof(ScannerState));
-  return st;
+// Consume up to and including a closing bracket/angle if present:  "[...]" or "<...>"
+static void consume_optional_label(TSLexer *lx) {
+  if (lx->lookahead == '[') {
+    advk(lx); // '['
+    while (!lx->eof(lx) && lx->lookahead != ']') advk(lx);
+    if (lx->lookahead == ']') advk(lx); // ']'
+  } else if (lx->lookahead == '<') {
+    advk(lx); // '<'
+    while (!lx->eof(lx) && lx->lookahead != '>') advk(lx);
+    if (lx->lookahead == '>') advk(lx); // '>'
+  }
 }
 
-void tree_sitter_vesti_external_scanner_destroy(void *payload) {
-  free(payload);
-}
-
+void *tree_sitter_vesti_external_scanner_create(void) { return NULL; }
+void tree_sitter_vesti_external_scanner_destroy(void *payload) { (void)payload; }
 unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
-  ScannerState *st = (ScannerState *)payload;
-  buffer[0] = (char)(st->suppress_stop_at_colon ? 1 : 0);
-  return 1;
+  (void)payload; (void)buffer; return 0;
 }
-
 void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-  ScannerState *st = (ScannerState *)payload;
-  st->suppress_stop_at_colon = (length >= 1 && buffer[0] == 1);
+  (void)payload; (void)buffer; (void)length;
 }
 
-static inline void advance_as_content(TSLexer *lexer) { lexer->advance(lexer, false); }
-static inline void skip(TSLexer *lexer)               { lexer->advance(lexer, true);  }
+bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
+  (void)payload;
 
-bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
-  ScannerState *st = (ScannerState *)payload;
+  // -------- END token: ^[ \t]* : l u #
+  if (valid[LUACODE_END]) {
+    // Allow leading spaces/tabs at BOL before the delimiter.
+    // We don't have direct "BOL" from TS; rely on grammar calling END only right after PAYLOAD,
+    // which stops exactly before ':' at BOL. Still, be permissive with leading spaces.
+    // Consume optional spaces/tabs only if the first char is space/tab or ':' (no harm otherwise).
+    while (is_space(lx->lookahead)) advk(lx);
 
-  // END token branch: consume exactly ":lu#"
-  if (valid_symbols[LUACODE_END]) {
-    if (lexer->lookahead != ':') return false;
-    skip(lexer);                        // ':'
-    if (lexer->lookahead != 'l') return false;
-    skip(lexer);                        // 'l'
-    if (lexer->lookahead != 'u') return false;
-    skip(lexer);                        // 'u'
-    if (lexer->lookahead != '#') return false;
-    skip(lexer);                        // '#'
+    if (lx->lookahead != ':') return false;
+    advk(lx); // ':'
+    if (lx->lookahead != 'l') return false; advk(lx); // 'l'
+    if (lx->lookahead != 'u') return false; advk(lx); // 'u'
+    if (lx->lookahead != '#') return false; advk(lx); // '#'
 
-    lexer->result_symbol = LUACODE_END;
-    // We successfully consumed the end marker; next payload colon checks are allowed again.
-    st->suppress_stop_at_colon = false;
+    // Optional label: :lu#<name> or :lu#[name]
+    consume_optional_label(lx);
+
+    lx->result_symbol = LUACODE_END;
     return true;
   }
 
-  // PAYLOAD token branch: read until (just before) ":lu#" or EOF.
-  if (!valid_symbols[LUACODE_PAYLOAD]) return false;
+  // -------- PAYLOAD token: everything until a BOL ":"
+  if (!valid[LUACODE_PAYLOAD]) return false;
 
-  lexer->result_symbol = LUACODE_PAYLOAD;
+  lx->result_symbol = LUACODE_PAYLOAD;
 
-  // Allow empty payload immediately.
-  lexer->mark_end(lexer);
+  // We consider we're at BOL at the start of payload.
+  bool at_bol = true;      // true at start or right after a newline (ignoring spaces/tabs)
+  lx->mark_end(lx);        // allow empty payload
 
   for (;;) {
-    if (lexer->eof(lexer)) {
-      return true;  // emit whatever we accumulated
+    if (lx->eof(lx)) {
+      return true; // emit what we have
     }
 
-    if (lexer->lookahead == ':') {
-      // Potential end marker. We MUST NOT consume here.
-      // If the parser wants END next and it's present, the END branch above
-      // will run immediately after this token and consume ":lu#".
-      // Mark token end BEFORE ':' so payload excludes the delimiter.
-      if (!st->suppress_stop_at_colon) {
-        lexer->mark_end(lexer);
-        return true;                  // stop payload right before ':'
-      }
-      // If we previously learned this colon wasn't an end, just take it as content.
-      advance_as_content(lexer);
+    int c = lx->lookahead;
+
+    // Maintain at_bol: stay true across spaces/tabs; set true after NL; clear on other chars.
+    if (is_nl(c)) {
+      advk(lx);
+      at_bol = true;
+      continue;
+    }
+    if (is_space(c)) {
+      // Spaces keep at_bol as-is
+      advk(lx);
       continue;
     }
 
-    // Regular character: consume as payload content
-    advance_as_content(lexer);
+    if (c == ':' && at_bol) {
+      // Potential ":lu#" delimiter at beginning of a line.
+      // Stop BEFORE ':'; let the END branch consume it.
+      lx->mark_end(lx);
+      return true;
+    }
+
+    // Regular content
+    at_bol = false;
+    advk(lx);
   }
 }
 
