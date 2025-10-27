@@ -1089,7 +1089,7 @@
     },
     "singleline_raw_latex": {
       "type": "PATTERN",
-      "value": "%##\\n|%#[^\\n]*\\n"
+      "value": "%#\\n|%#[^\\n]*\\n"
     },
     "multiline_raw_latex": {
       "type": "TOKEN",
@@ -1098,11 +1098,11 @@
         "members": [
           {
             "type": "STRING",
-            "value": "%#"
+            "value": "%-"
           },
           {
             "type": "PATTERN",
-            "value": "[^#]*#+([^%#][^#]*#+)*"
+            "value": "[^-]*-+([^%-][^-]*-+)*"
           },
           {
             "type": "STRING",
