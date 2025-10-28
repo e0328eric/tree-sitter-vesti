@@ -70,6 +70,14 @@
         },
         {
           "type": "SYMBOL",
+          "name": "multiline_raw_latex"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "singleline_raw_latex"
+        },
+        {
+          "type": "SYMBOL",
           "name": "KEYWORD_useltx3"
         },
         {
@@ -95,14 +103,6 @@
         {
           "type": "SYMBOL",
           "name": "attributes"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "singleline_raw_latex"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "multiline_raw_latex"
         },
         {
           "type": "SYMBOL",
@@ -684,6 +684,27 @@
         }
       ]
     },
+    "multiline_raw_latex": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "KEYWORD_rawlatex_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rawlatex_payload"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "rawlatex_end"
+        }
+      ]
+    },
+    "singleline_raw_latex": {
+      "type": "PATTERN",
+      "value": "%#\\n|%#[^\\n]*\\n"
+    },
     "attributes": {
       "type": "PATTERN",
       "value": "#[a-zA-Z0-9][a-zA-Z0-9_]*"
@@ -819,6 +840,13 @@
       "content": {
         "type": "STRING",
         "value": "#lu:"
+      }
+    },
+    "KEYWORD_rawlatex_block": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "%-"
       }
     },
     "compile_type": {
@@ -1087,30 +1115,6 @@
         "value": "[A-Za-z][A-Za-z0-9-]*(\\*)*"
       }
     },
-    "singleline_raw_latex": {
-      "type": "PATTERN",
-      "value": "%#\\n|%#[^\\n]*\\n"
-    },
-    "multiline_raw_latex": {
-      "type": "TOKEN",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "STRING",
-            "value": "%-"
-          },
-          {
-            "type": "PATTERN",
-            "value": "[^-]*-+([^%-][^-]*-+)*"
-          },
-          {
-            "type": "STRING",
-            "value": "%"
-          }
-        ]
-      }
-    },
     "comment": {
       "type": "TOKEN",
       "content": {
@@ -1161,6 +1165,14 @@
     {
       "type": "SYMBOL",
       "name": "luacode_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "rawlatex_payload"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "rawlatex_end"
     }
   ],
   "inline": [],

@@ -318,6 +318,29 @@
     "fields": {}
   },
   {
+    "type": "multiline_raw_latex",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "KEYWORD_rawlatex_block",
+          "named": true
+        },
+        {
+          "type": "rawlatex_end",
+          "named": true
+        },
+        {
+          "type": "rawlatex_payload",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "multipkg_decl",
     "named": true,
     "fields": {},
@@ -700,6 +723,10 @@
     "named": true
   },
   {
+    "type": "KEYWORD_rawlatex_block",
+    "named": true
+  },
+  {
     "type": "KEYWORD_startdoc",
     "named": true
   },
@@ -769,11 +796,15 @@
     "named": true
   },
   {
-    "type": "multiline_raw_latex",
+    "type": "option_name",
     "named": true
   },
   {
-    "type": "option_name",
+    "type": "rawlatex_end",
+    "named": true
+  },
+  {
+    "type": "rawlatex_payload",
     "named": true
   },
   {

@@ -10,7 +10,12 @@
 module.exports = grammar({
   name: "vesti",
 
-  externals: ($) => [$.luacode_payload, $.luacode_end],
+  externals: ($) => [
+    $.luacode_payload,
+    $.luacode_end,
+    $.rawlatex_payload,
+    $.rawlatex_end,
+  ],
   extras: ($) => [/\s/, $.comment],
 
   rules: {
@@ -31,6 +36,8 @@ module.exports = grammar({
         $.defun_decl,
         $.defenv_decl,
         $.luacode_block,
+        $.multiline_raw_latex,
+        $.singleline_raw_latex,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -38,8 +45,6 @@ module.exports = grammar({
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
         $.attributes,
-        $.singleline_raw_latex,
-        $.multiline_raw_latex,
         $._text_content,
       ),
 
@@ -125,6 +130,13 @@ module.exports = grammar({
     luacode_block: ($) =>
       seq($.KEYWORD_luacode, $.luacode_payload, $.luacode_end),
 
+    // multiline raw latex block (external scanner provides payload + end)
+    multiline_raw_latex: ($) =>
+      seq($.KEYWORD_rawlatex_block, $.rawlatex_payload, $.rawlatex_end),
+
+    // single-line raw latex (keeps simple pattern like before)
+    singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/,
+
     attributes: ($) => /#[a-zA-Z0-9][a-zA-Z0-9_]*/,
 
     KEYWORD_docclass: ($) => token("docclass"),
@@ -146,6 +158,7 @@ module.exports = grammar({
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_compty: ($) => token("compty"),
     KEYWORD_luacode: ($) => token("#lu:"),
+    KEYWORD_rawlatex_block: ($) => token("%-"),
 
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),
@@ -179,10 +192,6 @@ module.exports = grammar({
     ascii_letter: ($) => /[A-Za-z]/,
     filepath: ($) => token(/[\p{L}@/\.\-_]+/),
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
-
-    singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/,
-    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-    multiline_raw_latex: (_) => token(seq("%-", /[^-]*-+([^%-][^-]*-+)*/, "%")),
 
     // Comments
     // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
