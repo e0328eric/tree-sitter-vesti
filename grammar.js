@@ -1,4 +1,5 @@
 /**
+ *
  * @file tree-sitter parser for vesti
  * @author Sungbae Jeong <almagest0328@gmail.com>
  * @license MIT
@@ -9,15 +10,8 @@
 
 module.exports = grammar({
   name: "vesti",
-
-  externals: ($) => [
-    $.luacode_payload,
-    $.luacode_end,
-    $.rawlatex_payload,
-    $.rawlatex_end,
-  ],
+  externals: ($) => [$.luacode_payload, $.luacode_end],
   extras: ($) => [/\s/, $.comment],
-
   rules: {
     vesti_content: ($) => repeat1($._statement),
     _statement: ($) =>
@@ -36,8 +30,6 @@ module.exports = grammar({
         $.defun_decl,
         $.defenv_decl,
         $.luacode_block,
-        $.multiline_raw_latex,
-        $.singleline_raw_latex,
         $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
         $.KEYWORD_makeatletter,
@@ -45,9 +37,10 @@ module.exports = grammar({
         $.KEYWORD_ltx3on,
         $.KEYWORD_ltx3off,
         $.attributes,
+        $.singleline_raw_latex,
+        $.multiline_raw_latex,
         $._text_content,
       ),
-
     docclass_decl: ($) =>
       seq($.KEYWORD_docclass, $.class_pkg_name, optional($.options), /\r?\n/),
     singlepkg_decl: ($) =>
@@ -65,7 +58,6 @@ module.exports = grammar({
         optional(/\r?\n/),
         "}",
       ),
-
     options: ($) =>
       seq(
         "(",
@@ -74,10 +66,8 @@ module.exports = grammar({
         optional(","),
         ")",
       ),
-
     class_pkg_name: ($) => /[\w\d-]+/,
     option_name: ($) => /([^,()]|\\,|\\(|\\))+/,
-
     importmod_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importmod, "(", $.filepath, ")")),
     copyfile_decl: ($) =>
@@ -88,7 +78,6 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
     compile_type_decl: ($) =>
       prec.right(2, seq($.KEYWORD_compty, "(", $.filepath, ")")),
-
     useenv_decl: ($) =>
       prec.right(
         1,
@@ -101,7 +90,6 @@ module.exports = grammar({
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
     defenv_optional_arg: ($) => seq("<", repeat(/[^>]/), ">"),
-
     defun_decl: ($) =>
       prec.right(
         1,
@@ -113,7 +101,6 @@ module.exports = grammar({
           $.brace_group,
         ),
       ),
-
     defenv_decl: ($) =>
       prec.right(
         1,
@@ -126,19 +113,9 @@ module.exports = grammar({
           $.brace_group,
         ),
       ),
-
     luacode_block: ($) =>
       seq($.KEYWORD_luacode, $.luacode_payload, $.luacode_end),
-
-    // multiline raw latex block (external scanner provides payload + end)
-    multiline_raw_latex: ($) =>
-      seq($.KEYWORD_rawlatex_block, $.rawlatex_payload, $.rawlatex_end),
-
-    // single-line raw latex (keeps simple pattern like before)
-    singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/,
-
     attributes: ($) => /#[a-zA-Z0-9][a-zA-Z0-9_]*/,
-
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
     KEYWORD_importmod: ($) => token("importmod"),
@@ -158,32 +135,24 @@ module.exports = grammar({
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_compty: ($) => token("compty"),
     KEYWORD_luacode: ($) => token("#lu:"),
-    KEYWORD_rawlatex_block: ($) => token("%-"),
-
     compile_type: ($) =>
-      choice(token("plain"), token("pdf"), token("xe"), token("lua")),
-
-    // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
+      choice(token("plain"), token("pdf"), token("xe"), token("lua")), // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
     _text_content: ($) =>
       prec.right(choice($.brace_group, $.latex_function, $.text, $._math)),
     brace_group: ($) => seq("{", $.vesti_content, "}"),
-
     _math: ($) => choice($.inline_math, $.display_math),
     inline_math: ($) => seq("$", repeat(/[^$]/), "$"),
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
-
     text: ($) =>
       prec.right(
         repeat1(choice($.word, $.delimiter, $.subscript, $.superscript)),
-      ),
-    //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
+      ), //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
     word: ($) => /[^\s\\%\{\}\$\#&_\^]+/,
     delimiter: ($) => /&/,
     subscript: ($) =>
       seq("_", choice($.brace_group, $.letter, $.latex_function)),
     superscript: ($) =>
       seq("^", choice($.brace_group, $.letter, $.latex_function)),
-
     latex_function: ($) =>
       prec.right(seq($.latex_function_name, repeat($.brace_group))),
     latex_function_name: ($) => /\\([^\r\n]|[@a-zA-Z]+\*?)?/,
@@ -192,9 +161,8 @@ module.exports = grammar({
     ascii_letter: ($) => /[A-Za-z]/,
     filepath: ($) => token(/[\p{L}@/\.\-_]+/),
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
-
-    // Comments
-    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/, // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    multiline_raw_latex: (_) => token(seq("%-", /[^-]*-+([^%-][^-]*-+)*/, "%")), // Comments // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     comment: (_) =>
       token(
         choice(
