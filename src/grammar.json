@@ -629,10 +629,6 @@
             "name": "KEYWORD_defenv"
           },
           {
-            "type": "SYMBOL",
-            "name": "env_name"
-          },
-          {
             "type": "CHOICE",
             "members": [
               {
@@ -645,16 +641,12 @@
             ]
           },
           {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "defenv_optional_arg"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "env_name"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "mandantory_arg"
           },
           {
             "type": "SYMBOL",

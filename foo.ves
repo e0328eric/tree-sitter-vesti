@@ -1,0 +1,6 @@
+useenv center {%-
+\leavevmode\vbox{\halign{&\tabskip=1em$#$\hfil&if#&$#$\hfil\tabskip=2em\cr
+    n_b = n+\gamma && n\geq 0, & n_b = 0 && n\in(-1,0],\cr
+    n_\nu = n+1+\gamma && n\geq -1, & n_\nu = 0 && n\in(-2,-1],\cr
+    n_c = n+\gamma && n\geq 0, & n_c = 0 && n\in(-2,0],\cr
+}}-%}

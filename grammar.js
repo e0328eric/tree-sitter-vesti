@@ -106,9 +106,9 @@ module.exports = grammar({
         1,
         seq(
           $.KEYWORD_defenv,
-          $.env_name,
           optional($.optional_arg),
-          optional($.defenv_optional_arg),
+          $.env_name,
+          $.mandantory_arg,
           $.brace_group,
           $.brace_group,
         ),
