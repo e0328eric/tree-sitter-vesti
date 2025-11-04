@@ -89,7 +89,6 @@ module.exports = grammar({
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),
-    defenv_optional_arg: ($) => seq("<", repeat(/[^>]/), ">"),
     defun_decl: ($) =>
       prec.right(
         1,

@@ -20,9 +20,7 @@
 ((KEYWORD_ltx3off) @keyword)
 ((KEYWORD_compty) @keyword)
 ((KEYWORD_luacode) @type)
-((KEYWORD_rawlatex_block) @type)
 ((luacode_end) @type)
-((rawlatex_end) @type)
 
 ;; Identifiers
 ((class_pkg_name) @type)
@@ -37,7 +35,6 @@
 ((options) @constant)
 ((mandantory_arg) @constant)
 ((optional_arg) @constant)
-((defenv_optional_arg) @function)
 
 ;; Comments
 ((comment) @comment)
