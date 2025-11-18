@@ -54,7 +54,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "endenv_decl"
+          "name": "KEYWORD_endenv"
         },
         {
           "type": "SYMBOL",
@@ -494,19 +494,6 @@
           }
         ]
       }
-    },
-    "endenv_decl": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_endenv"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "env_name"
-        }
-      ]
     },
     "env_arg": {
       "type": "CHOICE",

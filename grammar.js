@@ -26,7 +26,7 @@ module.exports = grammar({
         $.compile_type_decl,
         $.useenv_decl,
         $.begenv_decl,
-        $.endenv_decl,
+        $.KEYWORD_endenv,
         $.defun_decl,
         $.defenv_decl,
         $.luacode_block,
@@ -85,7 +85,6 @@ module.exports = grammar({
       ),
     begenv_decl: ($) =>
       prec.right(1, seq($.KEYWORD_begenv, $.env_name, repeat($.env_arg))),
-    endenv_decl: ($) => seq($.KEYWORD_endenv, $.env_name),
     env_arg: ($) => choice($.mandantory_arg, $.optional_arg),
     mandantory_arg: ($) => seq("(", repeat(/[^)]/), ")"),
     optional_arg: ($) => seq("[", repeat(/[^\]]/), "]"),

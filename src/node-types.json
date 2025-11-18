@@ -166,25 +166,6 @@
     }
   },
   {
-    "type": "endenv_decl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "KEYWORD_endenv",
-          "named": true
-        },
-        {
-          "type": "env_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "env_arg",
     "named": true,
     "fields": {},
@@ -488,6 +469,10 @@
       "required": true,
       "types": [
         {
+          "type": "KEYWORD_endenv",
+          "named": true
+        },
+        {
           "type": "KEYWORD_ltx3off",
           "named": true
         },
@@ -545,10 +530,6 @@
         },
         {
           "type": "docclass_decl",
-          "named": true
-        },
-        {
-          "type": "endenv_decl",
           "named": true
         },
         {
