@@ -631,7 +631,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_luacode"
+          "name": "luacode_start"
         },
         {
           "type": "SYMBOL",
@@ -771,13 +771,6 @@
       "content": {
         "type": "STRING",
         "value": "compty"
-      }
-    },
-    "KEYWORD_luacode": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "#lu:"
       }
     },
     "compile_type": {
@@ -1113,6 +1106,10 @@
   "conflicts": [],
   "precedences": [],
   "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "luacode_start"
+    },
     {
       "type": "SYMBOL",
       "name": "luacode_payload"

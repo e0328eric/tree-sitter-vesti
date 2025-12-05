@@ -10,7 +10,7 @@
 
 module.exports = grammar({
   name: "vesti",
-  externals: ($) => [$.luacode_payload, $.luacode_end],
+  externals: ($) => [$.luacode_start, $.luacode_payload, $.luacode_end],
   extras: ($) => [/\s/, $.comment],
   rules: {
     vesti_content: ($) => repeat1($._statement),
@@ -112,7 +112,7 @@ module.exports = grammar({
         ),
       ),
     luacode_block: ($) =>
-      seq($.KEYWORD_luacode, $.luacode_payload, $.luacode_end),
+      seq($.luacode_start, $.luacode_payload, $.luacode_end),
     attributes: ($) => /#[a-zA-Z0-9][a-zA-Z0-9_]*/,
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
@@ -132,9 +132,9 @@ module.exports = grammar({
     KEYWORD_ltx3on: ($) => token("ltx3on"),
     KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_compty: ($) => token("compty"),
-    KEYWORD_luacode: ($) => token("#lu:"),
     compile_type: ($) =>
-      choice(token("plain"), token("pdf"), token("xe"), token("lua")), // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
+      choice(token("plain"), token("pdf"), token("xe"), token("lua")),
+    // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
     _text_content: ($) =>
       prec.right(choice($.brace_group, $.latex_function, $.text, $._math)),
     brace_group: ($) => seq("{", $.vesti_content, "}"),

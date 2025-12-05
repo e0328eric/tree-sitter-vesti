@@ -4,183 +4,252 @@
  */
 
 #include <tree_sitter/parser.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 
+// Definitions
 enum TokenType {
-    LUACODE_PAYLOAD,
-    LUACODE_END,
+  LUACODE_START,
+  LUACODE_CONTENT,
+  LUACODE_END,
 };
 
-// Maximum length for the tag as per requirements (32) + buffer
 #define MAX_TAG_LENGTH 32
 
 typedef struct {
-    char tag[MAX_TAG_LENGTH + 1];
-    uint8_t tag_len;
+  // Store the tag string (e.g., "foo", "123")
+  // +1 for null terminator
+  char tag[MAX_TAG_LENGTH + 1];
+  uint8_t tag_len;
 } Scanner;
 
-// --- Helper Functions ---
+// --- Lifecycle Methods ---
 
-static inline void advance(TSLexer *lx) { lx->advance(lx, false); }
-static inline void skip(TSLexer *lx)    { lx->advance(lx, true); }
-
-// Custom alnum check to ensure ASCII only (as per requirements)
-static inline bool is_ascii_alnum(int32_t c) {
-    return (c >= 'a' && c <= 'z') || 
-           (c >= 'A' && c <= 'Z') || 
-           (c >= '0' && c <= '9');
-}
-
-// --- Lifecycle & Serialization ---
 void *tree_sitter_vesti_external_scanner_create(void) {
-    Scanner *s = (Scanner *)calloc(1, sizeof(Scanner));
-    return s;
+  Scanner *s = (Scanner *)calloc(1, sizeof(Scanner));
+  return s;
 }
 
 void tree_sitter_vesti_external_scanner_destroy(void *payload) {
-    free(payload);
+  free(payload);
 }
 
 unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
-    Scanner *s = (Scanner *)payload;
-    // Format: [len, t, a, g, ...]
-    if (s->tag_len > MAX_TAG_LENGTH) return 0;
-    
-    buffer[0] = s->tag_len;
-    if (s->tag_len > 0) {
-        memcpy(&buffer[1], s->tag, s->tag_len);
-    }
-    return s->tag_len + 1;
+  Scanner *s = (Scanner *)payload;
+  if (s->tag_len > MAX_TAG_LENGTH) return 0;
+  
+  buffer[0] = s->tag_len;
+  if (s->tag_len > 0) {
+    memcpy(&buffer[1], s->tag, s->tag_len);
+  }
+  return s->tag_len + 1;
 }
 
 void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-    Scanner *s = (Scanner *)payload;
-    if (length == 0) {
-        s->tag_len = 0;
-        return;
-    }
-    
-    s->tag_len = (uint8_t)buffer[0];
-    if (s->tag_len > MAX_TAG_LENGTH) s->tag_len = 0; // Safety reset
-    
-    if (s->tag_len > 0 && length >= s->tag_len + 1) {
-        memcpy(s->tag, &buffer[1], s->tag_len);
-        s->tag[s->tag_len] = '\0';
-    }
+  Scanner *s = (Scanner *)payload;
+  if (length == 0) {
+    s->tag_len = 0;
+    return;
+  }
+  
+  s->tag_len = (uint8_t)buffer[0];
+  if (s->tag_len > MAX_TAG_LENGTH) s->tag_len = 0;
+
+  if (s->tag_len > 0 && length >= s->tag_len + 1) {
+    memcpy(s->tag, &buffer[1], s->tag_len);
+    s->tag[s->tag_len] = '\0';
+  }
 }
 
-// --- Scanning Logic ---
+// --- Helper Functions ---
+
+static inline void advance(TSLexer *lx) {
+  lx->advance(lx, false);
+}
+
+static inline void skip(TSLexer *lx) {
+  lx->advance(lx, true);
+}
+
+static inline bool is_ascii_alnum(int32_t c) {
+  return (c >= '0' && c <= '9') ||
+         (c >= 'A' && c <= 'Z') ||
+         (c >= 'a' && c <= 'z');
+}
+
+// --- Main Scan Logic ---
+
 bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
-    Scanner *s = (Scanner *)payload;
+  Scanner *s = (Scanner *)payload;
 
-    // 1. Handle LUACODE_END
-    // We expect the exact sequence: :<tag>:#
-    if (valid[LUACODE_END] && s->tag_len > 0) {
-        // We do not skip whitespace here; syntax implies tight binding for the closer
-        if (lx->lookahead == ':') {
-            advance(lx);
-            
-            // Check against stored tag
-            for (int i = 0; i < s->tag_len; i++) {
-                if (lx->lookahead == s->tag[i]) {
-                    advance(lx);
-                } else {
-                    return false; // Mismatch, backtrack (scanner returns false)
-                }
-            }
+  // 1. Handle LUACODE_START
+  // Pattern: #lu:<tag>:
+  if (valid[LUACODE_START]) {
+    while (isspace(lx->lookahead)) skip(lx);
 
-            // Check closing pattern :#
-            if (lx->lookahead == ':') {
-                advance(lx);
-                if (lx->lookahead == '#') {
-                    advance(lx);
-                    lx->result_symbol = LUACODE_END;
-                    s->tag_len = 0; // Reset state
-                    return true;
-                }
-            }
+    if (lx->lookahead != '#') return false;
+    advance(lx);
+    if (lx->lookahead != 'l') return false;
+    advance(lx);
+    if (lx->lookahead != 'u') return false;
+    advance(lx);
+    if (lx->lookahead != ':') return false;
+    advance(lx);
+
+    // Read Tag
+    s->tag_len = 0;
+    while (is_ascii_alnum(lx->lookahead)) {
+      if (s->tag_len < MAX_TAG_LENGTH) {
+        s->tag[s->tag_len++] = (char)lx->lookahead;
+      }
+      advance(lx);
+    }
+    s->tag[s->tag_len] = '\0';
+
+    // Must end with ':'
+    if (lx->lookahead != ':') return false;
+    advance(lx);
+
+    lx->result_symbol = LUACODE_START;
+    return true;
+  }
+
+  // 2. Handle LUACODE_END
+  // Pattern: :<tag>:#
+  // We check this before CONTENT to handle empty content cases correctly.
+  if (valid[LUACODE_END] && s->tag_len > 0) {
+    // Check if we are at the delimiter
+    if (lx->lookahead == ':') {
+      lx->mark_end(lx);
+      advance(lx);
+
+      // Verify tag
+      for (int i = 0; i < s->tag_len; i++) {
+        if (lx->lookahead != s->tag[i]) return false; // Not our end tag
+        advance(lx);
+      }
+
+      // Verify closing suffix
+      if (lx->lookahead == ':') {
+        advance(lx);
+        if (lx->lookahead == '#') {
+          advance(lx);
+          lx->result_symbol = LUACODE_END;
+          s->tag_len = 0; // Reset
+          return true;
         }
-        return false;
+      }
+    }
+  }
+
+  // 3. Handle LUACODE_CONTENT
+  // Read until we see :<tag>:#
+  if (valid[LUACODE_CONTENT] && s->tag_len > 0) {
+    lx->result_symbol = LUACODE_CONTENT;
+    
+    // If we are immediately at the end delimiter, return false
+    // so the parser can try LUACODE_END.
+    // We do a peek check without consuming if it matches.
+    
+    bool is_delimiter = false;
+    if (lx->lookahead == ':') {
+      lx->mark_end(lx); // Save position
+      advance(lx);
+      
+      bool tag_matches = true;
+      for (int i = 0; i < s->tag_len; i++) {
+        if (lx->lookahead != s->tag[i]) { tag_matches = false; break; }
+        advance(lx);
+      }
+      
+      if (tag_matches && lx->lookahead == ':') {
+        advance(lx);
+        if (lx->lookahead == '#') {
+          is_delimiter = true;
+        }
+      }
+      
+      // Reset position to allow LUACODE_END to parse it or CONTENT to consume the false alarm
+      // We cannot literally rewind, but since we advanced, if it WAS the delimiter,
+      // we return false. Since we cannot rewind `lx` in TS C API (only mark_end restores on return),
+      // we must rely on the fact that returning `false` resets the lexer to the start.
+      if (is_delimiter) return false; 
     }
 
-    // 2. Handle LUACODE_PAYLOAD
-    if (valid[LUACODE_PAYLOAD]) {
-        // The parser has consumed '#lu:'. We are now at the tag start.
-        // Step A: Parse the opening tag
+    // If it wasn't the delimiter, we start scanning content.
+    // Note: The previous peek advanced the lexer, but returning false resets it.
+    // Now we enter the loop to consume content.
+    
+    bool has_content = false;
+    
+    while (!lx->eof(lx)) {
+      lx->mark_end(lx); // Mark current point as end of valid content
+
+      if (lx->lookahead == ':') {
+        // Potential delimiter?
+        // We need to check if it matches :<tag>:#
+        // If it DOES match, we stop (return true with current mark_end).
+        // If it does NOT match, we consume the ':' and continue.
         
-        // Skip optional whitespace before the tag starts (if any)
-        while (isspace(lx->lookahead)) skip(lx);
-
-        s->tag_len = 0;
-        while (is_ascii_alnum(lx->lookahead)) {
-            if (s->tag_len < MAX_TAG_LENGTH) {
-                s->tag[s->tag_len++] = lx->lookahead;
-            }
-            advance(lx);
-        }
-        s->tag[s->tag_len] = '\0';
-
-        // Tag must end with ':'
-        if (lx->lookahead != ':') {
-            return false;
-        }
-        advance(lx); // Consume the ':' separator
-
-        // Step B: Consume content until we see :<tag>:#
-        // We include the opening tag and colon in the payload token range.
+        bool potential_match = true;
+        // We can't easily look ahead multiple chars without advancing.
+        // But we can advance and if it fails, we keep going.
+        // The tricky part is ensuring we don't accidentally consume the real delimiter partway.
         
-        lx->result_symbol = LUACODE_PAYLOAD;
+        // Since we can't lookahead arbitrarily, we implement a state machine or specific check.
+        // Actually, easiest way in Tree-sitter scanner:
+        // loop char by char. If char is ':', check next chars.
         
-        for (;;) {
-            // Mark the current position. If we match the delimiter, 
-            // the token ends here (exclusive of delimiter).
-            lx->mark_end(lx);
-
-            if (lx->eof(lx)) {
-                return true; // Return what we have
-            }
-
-            if (lx->lookahead == ':') {
-                // Potential start of closing delimiter.
-                // Speculatively check if the full delimiter matches.
-                // We cannot "rewind" manually, but mark_end saves our "valid token" position.
-                // If we match fully, we return true immediately (lexer resets to mark_end).
-                // If we mismatch, we continue loop (lexer advanced, consuming the mismatch chars).
-
-                bool match = true;
-                advance(lx); // Consume ':'
-
-                // Check tag
-                for (int i = 0; i < s->tag_len; i++) {
-                    if (lx->lookahead != s->tag[i]) {
-                        match = false;
-                        break; // Stop inner loop
-                    }
-                    advance(lx);
-                }
-
-                if (match) {
-                    // Check closing :#
-                    if (lx->lookahead == ':') {
-                        advance(lx);
-                        if (lx->lookahead == '#') {
-                            // Full match found!
-                            // We return true. The scanner "rewinds" to the last mark_end(),
-                            // effectively leaving the delimiter for the NEXT token (LUACODE_END).
-                            return true;
-                        }
-                    }
-                }
-                // If we are here, it was a partial match or mismatch.
-                // We have advanced lx. The loop continues.
-                // The characters we scanned are now part of the payload.
-            } else {
-                advance(lx);
-            }
+        // However, we can't peek easily.
+        // Strategy: treat everything as content unless it matches the full sequence.
+        
+        // Let's rely on the fact that if we return true, the lexer position is `mark_end`.
+        // So we can speculate.
+        
+        int32_t c = lx->lookahead;
+        if (c == ':') {
+           // This might be the start of the end.
+           // We have already marked_end() BEFORE this colon.
+           // So if this IS the delimiter, the token ends here.
+           
+           advance(lx); // consume ':'
+           
+           bool match = true;
+           for(int i=0; i<s->tag_len; i++) {
+             if (lx->lookahead != s->tag[i]) { match = false; break; }
+             advance(lx);
+           }
+           
+           if (match) {
+             if (lx->lookahead == ':') {
+               advance(lx);
+               if (lx->lookahead == '#') {
+                 // Found it! 
+                 // We return true. Lexer cuts token at last mark_end (before the first ':').
+                 // The delimiter is left for LUACODE_END.
+                 return true; 
+               }
+             }
+           }
+           // If we are here, it was not the delimiter.
+           // We continue the loop. 
+           // The characters we just advanced over are part of the content.
+           // We will mark_end() at the top of the next loop iteration.
+           has_content = true;
+        } else {
+          advance(lx);
+          has_content = true;
         }
+      } else {
+        advance(lx);
+        has_content = true;
+      }
     }
+    
+    return has_content;
+  }
 
-    return false;
+  return false;
 }

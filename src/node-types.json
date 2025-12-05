@@ -274,15 +274,15 @@
       "required": true,
       "types": [
         {
-          "type": "KEYWORD_luacode",
-          "named": true
-        },
-        {
           "type": "luacode_end",
           "named": true
         },
         {
           "type": "luacode_payload",
+          "named": true
+        },
+        {
+          "type": "luacode_start",
           "named": true
         }
       ]
@@ -656,10 +656,6 @@
     "named": true
   },
   {
-    "type": "KEYWORD_luacode",
-    "named": true
-  },
-  {
     "type": "KEYWORD_makeatletter",
     "named": true
   },
@@ -734,6 +730,10 @@
   },
   {
     "type": "luacode_payload",
+    "named": true
+  },
+  {
+    "type": "luacode_start",
     "named": true
   },
   {
