@@ -56,7 +56,7 @@ void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *b
 static inline void advance(TSLexer *lx) { lx->advance(lx, false); }
 static inline void skip(TSLexer *lx)    { lx->advance(lx, true); }
 
-// Updated to include ':' as a valid tag character
+// Allow alphanumeric and colon in tags
 static inline bool is_tag_char(int32_t c) {
   return (c >= '0' && c <= '9') ||
          (c >= 'A' && c <= 'Z') ||
@@ -73,7 +73,6 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
   if (valid[LUACODE_START]) {
     while (isspace(lx->lookahead)) skip(lx);
 
-    // Match prefix "#lu:"
     if (lx->lookahead != '#') return false; advance(lx);
     if (lx->lookahead != 'l') return false; advance(lx);
     if (lx->lookahead != 'u') return false; advance(lx);
@@ -81,44 +80,35 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
 
     s->tag_len = 0;
 
-    // Greedy tag matching loop
+    // Greedy strategy: 
+    // Consume chars as long as they are valid tag chars.
+    // If we see a colon, check the NEXT char. 
+    // - If next is NOT a tag char, this colon is the separator.
+    // - If next IS a tag char, this colon is part of the tag.
     while (true) {
       if (lx->eof(lx)) return false;
 
       int32_t current = lx->lookahead;
 
       if (!is_tag_char(current)) {
-        // We hit a char that definitely isn't part of a tag (e.g. space).
-        // This is an error because we expected a ':' separator previously.
-        // Unless the previous char was the separator? No, we handle that below.
+        // Unexpected char (space, etc) where we expected tag or separator
         return false;
       }
 
-      // If current is ':', it MIGHT be the separator.
-      // We must check the next character to decide.
       if (current == ':') {
-        // We consume this colon tentatively.
         advance(lx); 
-        
-        // Check what comes next
+        // Speculative lookahead to decide if this is separator or content
         if (!is_tag_char(lx->lookahead)) {
-          // Next char is NOT a tag char (e.g. space, newline).
-          // Therefore, the colon we just consumed IS the separator.
-          // We are done!
-          if (s->tag_len == 0) return false; // Empty tag not allowed (#lu::)
-          
+          // Found separator!
+          if (s->tag_len == 0) return false; // Empty tag not allowed
           s->tag[s->tag_len] = '\0';
           lx->mark_end(lx);
           lx->result_symbol = LUACODE_START;
           return true;
         } 
-        
-        // Else: Next char IS a tag char. 
-        // So the colon we just consumed was actually part of the tag.
+        // It was part of the tag
         if (s->tag_len < MAX_TAG_LENGTH) s->tag[s->tag_len++] = ':';
-        // Continue loop to process the 'next' char (which is now current lookahead)
       } else {
-        // Regular alphanumeric char
         if (s->tag_len < MAX_TAG_LENGTH) s->tag[s->tag_len++] = (char)current;
         advance(lx);
       }
@@ -127,26 +117,28 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
 
   // 2. LUACODE_END: :<tag>:#
   if (valid[LUACODE_END] && s->tag_len > 0) {
-    // Note: No skip() here; delimiters usually bind tightly or grammar handles spaces before.
-    // If we are at EOF, fail.
-    
+    // FIX: Skip whitespace. The parser might call this after content 
+    // (which might end at a newline), so we must skip leading spaces/newlines 
+    // to find the ':'
+    while (isspace(lx->lookahead)) skip(lx);
+
     if (lx->lookahead == ':') {
       advance(lx);
       
-      // Match Tag
+      // Match exact tag
       for (int i = 0; i < s->tag_len; i++) {
         if (lx->lookahead != s->tag[i]) return false;
         advance(lx);
       }
 
-      // Match Suffix ":#"
+      // Match closing ":#"
       if (lx->lookahead == ':') {
         advance(lx);
         if (lx->lookahead == '#') {
           advance(lx);
-          lx->mark_end(lx);
+          lx->mark_end(lx); // Ensure token has width
           lx->result_symbol = LUACODE_END;
-          s->tag_len = 0; // Reset
+          s->tag_len = 0; // Reset state
           return true;
         }
       }
@@ -160,19 +152,17 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     bool has_content = false;
 
     while (!lx->eof(lx)) {
-      lx->mark_end(lx); // Valid content up to here
+      lx->mark_end(lx); // Mark content end BEFORE checking for delimiter
 
       if (lx->lookahead == ':') {
         // Potential delimiter start.
-        // We need to verify if this is EXACTLY :<tag>:# without consuming it if it matches.
-        // Since we can't rewind easily, we verify. If match -> return true (lexer resets to mark_end).
-        // If mismatch -> consume the ':' and continue.
+        // We verify EXACTLY :<tag>:#.
+        // If it matches, we return true (lexer resets to mark_end).
+        // If it fails, we consume the checked chars as content and continue.
+        
+        int32_t c = lx->lookahead; 
+        advance(lx); // Consume ':'
 
-        // We do a manual lookahead loop
-        int32_t c = lx->lookahead; // ':'
-        advance(lx);
-
-        // Check tag
         bool match = true;
         for (int i = 0; i < s->tag_len; i++) {
           if (lx->lookahead != s->tag[i]) { match = false; break; }
@@ -183,15 +173,16 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
           if (lx->lookahead == ':') {
             advance(lx);
             if (lx->lookahead == '#') {
-              // Found the delimiter!
-              // Return true. Lexer rewinds to `mark_end` (before the first ':').
-              return true;
+              // Found delimiter. Return true.
+              // Lexer rewinds to the last mark_end() (before the first ':').
+              return true; 
             }
           }
         }
         
-        // If we get here, it wasn't the delimiter.
-        // The characters we advanced over are valid content.
+        // Mismatch. The characters we advanced over are content.
+        // We continue the loop. 
+        // Important: The next mark_end() at top of loop will capture these chars.
         has_content = true;
       } else {
         advance(lx);
