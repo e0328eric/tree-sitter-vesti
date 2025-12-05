@@ -19,8 +19,6 @@ enum TokenType {
 #define MAX_TAG_LENGTH 32
 
 typedef struct {
-  // Store the tag string (e.g., "foo", "123")
-  // +1 for null terminator
   char tag[MAX_TAG_LENGTH + 1];
   uint8_t tag_len;
 } Scanner;
@@ -112,22 +110,30 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     if (lx->lookahead != ':') return false;
     advance(lx);
 
+    // IMPORTANT: Mark the end here so the token includes all consumed characters
+    lx->mark_end(lx); 
     lx->result_symbol = LUACODE_START;
     return true;
   }
 
   // 2. Handle LUACODE_END
   // Pattern: :<tag>:#
-  // We check this before CONTENT to handle empty content cases correctly.
   if (valid[LUACODE_END] && s->tag_len > 0) {
-    // Check if we are at the delimiter
+    // We do NOT use skip() here. The end delimiter usually binds tightly or handles its own whitespace
+    // if the grammar allows it. 
+    // Assuming 'vesti' grammar handles whitespace via 'extras', but external scanners 
+    // must handle their own leading whitespace if 'extras' doesn't apply during external scan.
+    // However, for tight delimiters, we usually check immediately.
+    
+    // Allow whitespace before the closing delimiter if necessary:
+    while (isspace(lx->lookahead)) skip(lx);
+
     if (lx->lookahead == ':') {
-      lx->mark_end(lx);
       advance(lx);
 
       // Verify tag
       for (int i = 0; i < s->tag_len; i++) {
-        if (lx->lookahead != s->tag[i]) return false; // Not our end tag
+        if (lx->lookahead != s->tag[i]) return false;
         advance(lx);
       }
 
@@ -136,26 +142,26 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
         advance(lx);
         if (lx->lookahead == '#') {
           advance(lx);
+          
+          // IMPORTANT: Mark the end here!
+          lx->mark_end(lx);
+          
           lx->result_symbol = LUACODE_END;
           s->tag_len = 0; // Reset
           return true;
         }
       }
     }
+    return false;
   }
 
   // 3. Handle LUACODE_CONTENT
-  // Read until we see :<tag>:#
   if (valid[LUACODE_CONTENT] && s->tag_len > 0) {
     lx->result_symbol = LUACODE_CONTENT;
     
-    // If we are immediately at the end delimiter, return false
-    // so the parser can try LUACODE_END.
-    // We do a peek check without consuming if it matches.
-    
-    bool is_delimiter = false;
+    // Check if we are already at the delimiter (empty content case)
     if (lx->lookahead == ':') {
-      lx->mark_end(lx); // Save position
+      lx->mark_end(lx); // Mark start (empty token)
       advance(lx);
       
       bool tag_matches = true;
@@ -167,87 +173,86 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
       if (tag_matches && lx->lookahead == ':') {
         advance(lx);
         if (lx->lookahead == '#') {
-          is_delimiter = true;
+          // This IS the delimiter. 
+          // We return false so the parser falls back to scanning LUACODE_END.
+          return false; 
         }
       }
+      // If we are here, it wasn't the delimiter. 
+      // Reset by returning false? No, we advanced. We need to handle this.
+      // Ideally, we shouldn't advance speculatively without ability to rewind.
+      // BUT, since we cannot rewind, we treat those consumed chars as content.
+      // However, separating this logic is messy.
       
-      // Reset position to allow LUACODE_END to parse it or CONTENT to consume the false alarm
-      // We cannot literally rewind, but since we advanced, if it WAS the delimiter,
-      // we return false. Since we cannot rewind `lx` in TS C API (only mark_end restores on return),
-      // we must rely on the fact that returning `false` resets the lexer to the start.
-      if (is_delimiter) return false; 
+      // Better approach for CONTENT:
+      // Loop and mark_end BEFORE the delimiter starts.
     }
 
-    // If it wasn't the delimiter, we start scanning content.
-    // Note: The previous peek advanced the lexer, but returning false resets it.
-    // Now we enter the loop to consume content.
+    // Reset loop state implies we start fresh from the character that wasn't the delimiter
+    // But we can't rewind. 
+    // Actually, simply scanning char-by-char works best.
+    
+    // Let's reset the logic to be simple and robust:
+    // We assume we are inside content. We stop ONLY when we see the delimiter.
+    
+    // Since we cannot verify the FULL delimiter without consuming it,
+    // and we cannot rewind if it matches...
+    // We rely on the fact that `mark_end` saves the valid token end.
+    
+    // If we match the delimiter fully, we return `true` with the PREVIOUS `mark_end`.
     
     bool has_content = false;
     
     while (!lx->eof(lx)) {
-      lx->mark_end(lx); // Mark current point as end of valid content
+      // 1. Mark current position as valid end of content
+      lx->mark_end(lx);
 
+      // 2. Peek for delimiter
       if (lx->lookahead == ':') {
-        // Potential delimiter?
-        // We need to check if it matches :<tag>:#
-        // If it DOES match, we stop (return true with current mark_end).
-        // If it does NOT match, we consume the ':' and continue.
+        // Start speculative check
+        // We cannot use 'advance' directly if we want to backtrack on failure,
+        // but we CAN use `advance` if we accept that failure = content.
         
-        bool potential_match = true;
-        // We can't easily look ahead multiple chars without advancing.
-        // But we can advance and if it fails, we keep going.
-        // The tricky part is ensuring we don't accidentally consume the real delimiter partway.
+        // However, if we advance and it turns out to be the delimiter,
+        // we want to return the token ending at step 1.
         
-        // Since we can't lookahead arbitrarily, we implement a state machine or specific check.
-        // Actually, easiest way in Tree-sitter scanner:
-        // loop char by char. If char is ':', check next chars.
+        // If we advance and it fails, those chars are content.
         
-        // However, we can't peek easily.
-        // Strategy: treat everything as content unless it matches the full sequence.
+        // This is tricky in C without a buffer.
+        // But we can just implement a specific check loop.
         
-        // Let's rely on the fact that if we return true, the lexer position is `mark_end`.
-        // So we can speculate.
+        int32_t c = lx->lookahead; 
+        // We must consume to check next chars
+        advance(lx); 
         
-        int32_t c = lx->lookahead;
-        if (c == ':') {
-           // This might be the start of the end.
-           // We have already marked_end() BEFORE this colon.
-           // So if this IS the delimiter, the token ends here.
-           
-           advance(lx); // consume ':'
-           
-           bool match = true;
-           for(int i=0; i<s->tag_len; i++) {
-             if (lx->lookahead != s->tag[i]) { match = false; break; }
-             advance(lx);
-           }
-           
-           if (match) {
-             if (lx->lookahead == ':') {
-               advance(lx);
-               if (lx->lookahead == '#') {
-                 // Found it! 
-                 // We return true. Lexer cuts token at last mark_end (before the first ':').
-                 // The delimiter is left for LUACODE_END.
-                 return true; 
-               }
-             }
-           }
-           // If we are here, it was not the delimiter.
-           // We continue the loop. 
-           // The characters we just advanced over are part of the content.
-           // We will mark_end() at the top of the next loop iteration.
-           has_content = true;
-        } else {
-          advance(lx);
-          has_content = true;
+        bool match = true;
+        for(int i=0; i<s->tag_len; i++) {
+           if (lx->lookahead != s->tag[i]) { match = false; break; }
+           advance(lx);
         }
+        
+        if (match) {
+           if (lx->lookahead == ':') {
+              advance(lx);
+              if (lx->lookahead == '#') {
+                 // FOUND DELIMITER!
+                 // Do NOT advance past '#'.
+                 // Return true. The result is the token up to the LAST mark_end (Step 1).
+                 return true; 
+              }
+           }
+        }
+        
+        // If we get here, it was NOT the delimiter.
+        // The characters we just consumed are valid content.
+        has_content = true;
+        // Continue loop. Next iteration will mark_end() including these chars.
       } else {
         advance(lx);
         has_content = true;
       }
     }
-    
+
     return has_content;
   }
 
