@@ -28,20 +28,24 @@ void *tree_sitter_vesti_external_scanner_create(void) {
   return calloc(1, sizeof(Scanner));
 }
 
-void tree_sitter_vesti_external_scanner_destroy(void *payload) {
+void tree_sitter_vesti_external_scanner_destroy(void* payload) {
   free(payload);
 }
 
-unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
-  Scanner *s = (Scanner *)payload;
+unsigned tree_sitter_vesti_external_scanner_serialize(void* payload, char* buffer) {
+  Scanner* s = (Scanner*)payload;
   if (s->tag_len > MAX_TAG_LENGTH) return 0;
   buffer[0] = s->tag_len;
   if (s->tag_len > 0) memcpy(&buffer[1], s->tag, s->tag_len);
   return s->tag_len + 1;
 }
 
-void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-  Scanner *s = (Scanner *)payload;
+void tree_sitter_vesti_external_scanner_deserialize(
+  void* payload,
+  const char* buffer,
+  unsigned length
+) {
+  Scanner* s = (Scanner*)payload;
   if (length == 0) { s->tag_len = 0; return; }
   s->tag_len = (uint8_t)buffer[0];
   if (s->tag_len > MAX_TAG_LENGTH) s->tag_len = 0;
@@ -53,8 +57,8 @@ void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *b
 
 // --- Helpers ---
 
-static inline void advance(TSLexer *lx) { lx->advance(lx, false); }
-static inline void skip(TSLexer *lx)    { lx->advance(lx, true); }
+static inline void advance(TSLexer* lx) { lx->advance(lx, false); }
+static inline void skip(TSLexer* lx)    { lx->advance(lx, true); }
 
 // Allow alphanumeric and colon in tags
 static inline bool is_tag_char(int32_t c) {
@@ -66,25 +70,22 @@ static inline bool is_tag_char(int32_t c) {
 
 // --- Scanner Logic ---
 
-bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
-  Scanner *s = (Scanner *)payload;
+bool tree_sitter_vesti_external_scanner_scan(
+  void* payload,
+  TSLexer* lx,
+  const bool* valid
+) {
+  Scanner* s = (Scanner*)payload;
 
-  // 1. LUACODE_START: #lu:<tag>:
+  // 1. LUACODE_START: #:<tag>#
   if (valid[LUACODE_START]) {
     while (isspace(lx->lookahead)) skip(lx);
 
     if (lx->lookahead != '#') return false; advance(lx);
-    if (lx->lookahead != 'l') return false; advance(lx);
-    if (lx->lookahead != 'u') return false; advance(lx);
     if (lx->lookahead != ':') return false; advance(lx);
 
     s->tag_len = 0;
 
-    // Greedy strategy: 
-    // Consume chars as long as they are valid tag chars.
-    // If we see a colon, check the NEXT char. 
-    // - If next is NOT a tag char, this colon is the separator.
-    // - If next IS a tag char, this colon is part of the tag.
     while (true) {
       if (lx->eof(lx)) return false;
 
@@ -95,19 +96,12 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
         return false;
       }
 
-      if (current == ':') {
-        advance(lx); 
-        // Speculative lookahead to decide if this is separator or content
-        if (!is_tag_char(lx->lookahead)) {
-          // Found separator!
-          if (s->tag_len == 0) return false; // Empty tag not allowed
-          s->tag[s->tag_len] = '\0';
-          lx->mark_end(lx);
-          lx->result_symbol = LUACODE_START;
-          return true;
-        } 
-        // It was part of the tag
-        if (s->tag_len < MAX_TAG_LENGTH) s->tag[s->tag_len++] = ':';
+      if (current == '#') {
+        advance(lx);
+        s->tag[s->tag_len] = '\0';
+        lx->mark_end(lx);
+        lx->result_symbol = LUACODE_START;
+        return true;
       } else {
         if (s->tag_len < MAX_TAG_LENGTH) s->tag[s->tag_len++] = (char)current;
         advance(lx);
@@ -115,14 +109,11 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     }
   }
 
-  // 2. LUACODE_END: :<tag>:#
+  // 2. LUACODE_END: #<tag>:#
   if (valid[LUACODE_END] && s->tag_len > 0) {
-    // FIX: Skip whitespace. The parser might call this after content 
-    // (which might end at a newline), so we must skip leading spaces/newlines 
-    // to find the ':'
     while (isspace(lx->lookahead)) skip(lx);
 
-    if (lx->lookahead == ':') {
+    if (lx->lookahead == '#') {
       advance(lx);
       
       // Match exact tag
@@ -154,14 +145,14 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     while (!lx->eof(lx)) {
       lx->mark_end(lx); // Mark content end BEFORE checking for delimiter
 
-      if (lx->lookahead == ':') {
+      if (lx->lookahead == '#') {
         // Potential delimiter start.
-        // We verify EXACTLY :<tag>:#.
+        // We verify EXACTLY #<tag>:#.
         // If it matches, we return true (lexer resets to mark_end).
         // If it fails, we consume the checked chars as content and continue.
         
         int32_t c = lx->lookahead; 
-        advance(lx); // Consume ':'
+        advance(lx); // Consume '#'
 
         bool match = true;
         for (int i = 0; i < s->tag_len; i++) {
