@@ -90,7 +90,6 @@ bool tree_sitter_vesti_external_scanner_scan(
       if (current == '#') {
         advance(lx);
         s->tag[s->tag_len] = '\0';
-        printf("Cowabunga: |%s|\n", s->tag);
         lx->mark_end(lx);
         lx->result_symbol = LUACODE_START;
         return true;
