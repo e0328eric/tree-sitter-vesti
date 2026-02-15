@@ -10,7 +10,12 @@
 
 module.exports = grammar({
   name: "vesti",
-  externals: ($) => [$.luacode_start, $.luacode_payload, $.luacode_end],
+  externals: ($) => [
+    $.luacode_start,
+    $.luacode_payload,
+    $.luacode_end,
+    $.comment,
+  ],
   extras: ($) => [/\s/, $.comment],
   rules: {
     vesti_content: ($) => repeat1($._statement),
@@ -161,9 +166,5 @@ module.exports = grammar({
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
     singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/, // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     multiline_raw_latex: (_) => token(seq("%-", /[^-]*-+([^%-][^-]*-+)*/, "%")), // Comments // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-    comment: (_) => choice(
-      seq("--*", /[^*]*\*+([^*-][^*]*\*+)*/, "--"),
-      seq("--", /[^\n]*/, choice("\n", "\r\n", "\r"))
-    )
   },
 });

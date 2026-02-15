@@ -1062,58 +1062,6 @@
           }
         ]
       }
-    },
-    "comment": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "--*"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[^*]*\\*+([^*-][^*]*\\*+)*"
-            },
-            {
-              "type": "STRING",
-              "value": "--"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "--"
-            },
-            {
-              "type": "PATTERN",
-              "value": "[^\\n]*"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "\n"
-                },
-                {
-                  "type": "STRING",
-                  "value": "\r\n"
-                },
-                {
-                  "type": "STRING",
-                  "value": "\r"
-                }
-              ]
-            }
-          ]
-        }
-      ]
     }
   },
   "extras": [
@@ -1140,6 +1088,10 @@
     {
       "type": "SYMBOL",
       "name": "luacode_end"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
     }
   ],
   "inline": [],

@@ -7,6 +7,7 @@ enum TokenType {
   LUACODE_START,
   LUACODE_CONTENT,
   LUACODE_END,
+  COMMENT,
 };
 
 typedef struct {
@@ -71,6 +72,56 @@ static bool scan_end(TSLexer *lx) {
   return true;
 }
 
+static bool scan_comment(TSLexer *lx) {
+  if (lx->lookahead != '-') return false; advance(lx);
+  if (lx->lookahead != '-') return false; advance(lx);
+
+  if (lx->lookahead == '[') {
+    advance(lx);
+
+    unsigned eq_count = 0;
+    while (lx->lookahead == '=') {
+      eq_count++;
+      advance(lx);
+    }
+
+    if (lx->lookahead == '[') {
+      advance(lx);
+
+      while (!lx->eof(lx)) {
+        if (lx->lookahead == ']') {
+          advance(lx);
+
+          unsigned seen_eq = 0;
+          while (seen_eq < eq_count && lx->lookahead == '=') {
+            seen_eq++;
+            advance(lx);
+          }
+
+          if (seen_eq == eq_count && lx->lookahead == ']') {
+            advance(lx);
+            lx->mark_end(lx);
+            return true;
+          }
+
+          continue;
+        }
+
+        advance(lx);
+      }
+
+      lx->mark_end(lx);
+      return true;
+    }
+  }
+
+  while (!lx->eof(lx) && lx->lookahead != '\n') advance(lx);
+  if (lx->lookahead == '\n') advance(lx);
+
+  lx->mark_end(lx);
+  return true;
+}
+
 bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
   (void)payload;
 
@@ -120,6 +171,14 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     }
 
     return has_content;
+  }
+
+  if (valid[COMMENT]) {
+    if (scan_comment(lx)) {
+      lx->result_symbol = COMMENT;
+      return true;
+    }
+    return false;
   }
 
   return false;
