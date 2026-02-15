@@ -124,21 +124,20 @@ static bool scan_comment(TSLexer *lx) {
 
 bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
   (void)payload;
-
-  if (valid[LUACODE_START]) {
-    if (scan_start(lx)) {
-      lx->result_symbol = LUACODE_START;
-      return true;
-    }
-    return false;
+  
+  if (valid[COMMENT] && scan_comment(lx)) {
+    lx->result_symbol = COMMENT;
+    return true;
   }
 
-  if (valid[LUACODE_END]) {
-    if (scan_end(lx)) {
-      lx->result_symbol = LUACODE_END;
-      return true;
-    }
-    return false;
+  if (valid[LUACODE_START] && scan_start(lx)) {
+    lx->result_symbol = LUACODE_START;
+    return true;
+  }
+
+  if (valid[LUACODE_END] && scan_end(lx)) {
+    lx->result_symbol = LUACODE_END;
+    return true;
   }
 
   if (valid[LUACODE_CONTENT]) {
@@ -171,14 +170,6 @@ bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const b
     }
 
     return has_content;
-  }
-
-  if (valid[COMMENT]) {
-    if (scan_comment(lx)) {
-      lx->result_symbol = COMMENT;
-      return true;
-    }
-    return false;
   }
 
   return false;

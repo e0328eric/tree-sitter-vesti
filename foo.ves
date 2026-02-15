@@ -1,2 +1,3 @@
-#:tag# print("Hello, World!") #tag:#
+#:: foo ::#
+-- foo
 
