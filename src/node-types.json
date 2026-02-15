@@ -38,30 +38,6 @@
     }
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "long_comment_end",
-          "named": true
-        },
-        {
-          "type": "long_comment_payload",
-          "named": true
-        },
-        {
-          "type": "long_comment_start",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "compile_type_decl",
     "named": true,
     "fields": {},
@@ -744,16 +720,14 @@
     "named": true
   },
   {
-    "type": "long_comment_end",
-    "named": true
+    "type": "line_comment",
+    "named": true,
+    "extra": true
   },
   {
-    "type": "long_comment_payload",
-    "named": true
-  },
-  {
-    "type": "long_comment_start",
-    "named": true
+    "type": "long_comment",
+    "named": true,
+    "extra": true
   },
   {
     "type": "luacode_end",

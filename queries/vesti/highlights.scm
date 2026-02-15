@@ -82,4 +82,5 @@
 (mandantory_arg) @constant
 (optional_arg) @constant
 
-(comment) @comment
+(line_comment) @comment
+(long_comment) @comment
