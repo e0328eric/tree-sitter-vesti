@@ -104,6 +104,8 @@ static bool scan_lua_comment(TSLexer *lx, const bool *valid_symbols, enum TokenT
   if (lx->lookahead != '-') return false;
   advance(lx);
 
+  if (lx->lookahead == '!') return false; // --! is already reserved
+
   // Attempt long comment if enabled and next char is '['
   if (valid_symbols[LONG_COMMENT] && lx->lookahead == '[') {
     advance(lx);
