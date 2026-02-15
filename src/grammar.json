@@ -923,6 +923,10 @@
             },
             {
               "type": "SYMBOL",
+              "name": "percent"
+            },
+            {
+              "type": "SYMBOL",
               "name": "superscript"
             }
           ]
@@ -936,6 +940,10 @@
     "delimiter": {
       "type": "PATTERN",
       "value": "&"
+    },
+    "percent": {
+      "type": "PATTERN",
+      "value": "%"
     },
     "subscript": {
       "type": "SEQ",

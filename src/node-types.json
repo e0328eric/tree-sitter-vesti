@@ -418,6 +418,10 @@
           "named": true
         },
         {
+          "type": "percent",
+          "named": true
+        },
+        {
           "type": "subscript",
           "named": true
         },
@@ -747,6 +751,10 @@
   },
   {
     "type": "option_name",
+    "named": true
+  },
+  {
+    "type": "percent",
     "named": true
   },
   {

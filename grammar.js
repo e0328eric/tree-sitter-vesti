@@ -149,10 +149,13 @@ module.exports = grammar({
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
     text: ($) =>
       prec.right(
-        repeat1(choice($.word, $.delimiter, $.subscript, $.superscript)),
+        repeat1(
+          choice($.word, $.delimiter, $.subscript, $.percent, $.superscript),
+        ),
       ), //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
     word: ($) => /[^\s\\%\{\}\$\#&_\^]+/,
     delimiter: ($) => /&/,
+    percent: ($) => /%/,
     subscript: ($) =>
       seq("_", choice($.brace_group, $.letter, $.latex_function)),
     superscript: ($) =>
