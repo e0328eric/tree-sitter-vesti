@@ -923,10 +923,6 @@
             },
             {
               "type": "SYMBOL",
-              "name": "percent"
-            },
-            {
-              "type": "SYMBOL",
               "name": "superscript"
             }
           ]
@@ -935,15 +931,11 @@
     },
     "word": {
       "type": "PATTERN",
-      "value": "[^\\s\\\\%\\{\\}\\$\\#&_\\^]+"
+      "value": "[^\\s\\\\\\{\\}\\$\\#&_\\^]+"
     },
     "delimiter": {
       "type": "PATTERN",
       "value": "&"
-    },
-    "percent": {
-      "type": "PATTERN",
-      "value": "%"
     },
     "subscript": {
       "type": "SEQ",
@@ -1023,7 +1015,7 @@
     },
     "letter": {
       "type": "PATTERN",
-      "value": "[^\\\\%\\{\\}\\$\\#_\\^]"
+      "value": "[^\\\\\\{\\}\\$\\#_\\^]"
     },
     "digit": {
       "type": "PATTERN",

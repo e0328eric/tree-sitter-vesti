@@ -1,212 +1,229 @@
 #include <tree_sitter/parser.h>
-#include <wctype.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 enum TokenType {
   LUACODE_START,
   LUACODE_PAYLOAD,
   LUACODE_END,
-
   LINE_COMMENT,
   LONG_COMMENT,
 };
 
+typedef struct {
+  bool in_luacode;
+} ScannerState;
+
 static inline void advance(TSLexer *lx) { lx->advance(lx, false); }
-static inline void skip(TSLexer *lx)    { lx->advance(lx, true);  }
+static inline void skip(TSLexer *lx) { lx->advance(lx, true); }
 
-static inline bool consume_char(int32_t c, TSLexer *lx) {
-  if (lx->lookahead != c) return false;
-  advance(lx);
-  return true;
-}
-
-static inline uint8_t consume_and_count_char(int32_t c, TSLexer *lx) {
-  uint8_t count = 0;
-  while (lx->lookahead == c) {
-    ++count;
-    advance(lx);
-  }
-  return count;
-}
-
-static inline void skip_whitespaces(TSLexer *lx) {
-  while (iswspace(lx->lookahead)) {
-    skip(lx);
+static void skip_whitespace(TSLexer *lx) {
+  for (;;) {
+    int32_t c = lx->lookahead;
+    if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+      skip(lx);
+    } else {
+      break;
+    }
   }
 }
-
-/* ===== external scanner boilerplate ===== */
-
-void *tree_sitter_vesti_external_scanner_create(void) {
-  return NULL; // no state needed
-}
-
-void tree_sitter_vesti_external_scanner_destroy(void *payload) {
-  (void)payload;
-}
-
-unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
-  (void)payload;
-  (void)buffer;
-  return 0;
-}
-
-void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-  (void)payload;
-  (void)buffer;
-  (void)length;
-}
-
-/* ===== Vesti LuaCode block #:: ... ::# ===== */
 
 static bool scan_luacode_start(TSLexer *lx) {
-  if (!consume_char('#', lx)) return false;
-  if (!consume_char(':', lx)) return false;
-  if (!consume_char(':', lx)) return false;
-  lx->mark_end(lx);
-  return true;
+  if (lx->lookahead != '#') return false;
+  advance(lx);
+  if (lx->lookahead != ':') return false;
+  advance(lx);
+  if (lx->lookahead != ':') return false;
+  advance(lx);
+  return true; // "#::"
 }
 
 static bool scan_luacode_end(TSLexer *lx) {
-  if (!consume_char(':', lx)) return false;
-  if (!consume_char(':', lx)) return false;
-  if (!consume_char('#', lx)) return false;
-  lx->mark_end(lx);
-  return true;
+  if (lx->lookahead != ':') return false;
+  advance(lx);
+  if (lx->lookahead != ':') return false;
+  advance(lx);
+  if (lx->lookahead != '#') return false;
+  advance(lx);
+  return true; // "::#"
 }
 
+// Greedy payload: consume everything up to (but not including) the next "::#".
+//
+// Key trick: we are allowed to "over-consume" and set mark_end before the end marker.
+// Tree-sitter will rewind the lexer's position back to mark_end automatically.
 static bool scan_luacode_payload(TSLexer *lx) {
-  // Consume until right before "::#"
-  bool has = false;
-  while (!lx->eof(lx)) {
-    lx->mark_end(lx);
+  bool consumed = false;
+
+  // mark_end is used as "the best token end so far"
+  // We only want to end right before the "::#" marker.
+  for (;;) {
+    if (lx->lookahead == 0) {
+      // EOF: token ends at last mark_end
+      return consumed;
+    }
 
     if (lx->lookahead == ':') {
+      // Potential start of "::#".
+      // First, record an end boundary BEFORE consuming ':'.
+      // If it turns out to be "::#", we keep this boundary and return.
+      lx->mark_end(lx);
+
+      // Consume ':' and try to see if this is actually "::#".
       advance(lx);
       if (lx->lookahead == ':') {
         advance(lx);
         if (lx->lookahead == '#') {
-          return has; // stop before the "::#"
+          // We consumed "::#" but token should end BEFORE it.
+          // mark_end was set before the first ':' so that's correct.
+          return consumed; // If consumed==false, END will have been matched instead (scan() tries END first).
         }
       }
-      has = true;
+
+      // Not an end marker. The ':' (and maybe next char) are payload.
+      // Since we've consumed payload chars, extend token end here.
+      lx->mark_end(lx);
+      consumed = true;
       continue;
     }
 
+    // Normal payload char
     advance(lx);
-    has = true;
+    lx->mark_end(lx);
+    consumed = true;
   }
-  return has;
 }
 
-/* ===== Lua long comment scanning as ONE token =====
-   long comment opener: --[=*[ 
-   long comment closer: ]=*]
-*/
+// Lua-ish comments:
+// - line comment: "-- .... \n"
+// - long comment: "--[=*[ .... ]=*]"
+static bool scan_lua_comment(TSLexer *lx, const bool *valid_symbols, enum TokenType *out_sym) {
+  if (lx->lookahead != '-') return false;
+  advance(lx);
+  if (lx->lookahead != '-') return false;
+  advance(lx);
 
-static bool scan_long_comment_after_dashes(TSLexer *lx) {
-  // We are positioned at the first '[' after having consumed "--"
-  if (!consume_char('[', lx)) return false;
+  // Attempt long comment if enabled and next char is '['
+  if (valid_symbols[LONG_COMMENT] && lx->lookahead == '[') {
+    advance(lx);
 
-  uint8_t level = consume_and_count_char('=', lx);
+    // Count '=' signs: [=*[   (Lua long brackets)
+    unsigned eq = 0;
+    while (lx->lookahead == '=') {
+      advance(lx);
+      eq++;
+    }
 
-  if (!consume_char('[', lx)) return false;
+    if (lx->lookahead == '[') {
+      advance(lx);
 
-  // Now consume until we see a matching ]=*]
-  while (!lx->eof(lx)) {
-    if (lx->lookahead == ']') {
-      // Potential closer
-      advance(lx); // consume ']'
+      // Scan until closing ]=*]
+      for (;;) {
+        if (lx->lookahead == 0) break; // EOF => unterminated long comment
 
-      uint8_t seen = 0;
-      while (seen < level && lx->lookahead == '=') {
-        seen++;
+        if (lx->lookahead == ']') {
+          advance(lx);
+
+          // must match same number of '='
+          unsigned seen = 0;
+          while (seen < eq && lx->lookahead == '=') {
+            advance(lx);
+            seen++;
+          }
+
+          if (seen == eq && lx->lookahead == ']') {
+            advance(lx);
+            *out_sym = LONG_COMMENT;
+            return true;
+          }
+
+          // otherwise continue scanning
+          continue;
+        }
+
         advance(lx);
       }
 
-      if (seen == level && lx->lookahead == ']') {
-        advance(lx);         // consume final ']'
-        lx->mark_end(lx);    // token ends here (does NOT include trailing text)
-        return true;
-      }
-
-      // Not actually a closer; keep going (we already consumed some chars)
-      continue;
-    }
-
-    advance(lx);
-  }
-
-  // Unterminated long comment: still return true so lexer can progress
-  lx->mark_end(lx);
-  return true;
-}
-
-static bool scan_line_comment_after_dashes(TSLexer *lx) {
-  // Consume to newline/CR/EOF
-  while (!lx->eof(lx) && lx->lookahead != '\n' && lx->lookahead != '\r') {
-    advance(lx);
-  }
-  lx->mark_end(lx);
-  return true;
-}
-
-static bool scan_comment(TSLexer *lx, const bool *valid) {
-  // Must start at first '-'
-  if (!consume_char('-', lx)) return false;
-  if (!consume_char('-', lx)) return false;
-
-  // If next is '[' and LONG_COMMENT is valid, prefer long comment
-  if (lx->lookahead == '[' && valid[LONG_COMMENT]) {
-    if (scan_long_comment_after_dashes(lx)) {
-      lx->result_symbol = LONG_COMMENT;
+      *out_sym = LONG_COMMENT;
       return true;
     }
+
+    // Not actually a long bracket; fall through to line comment.
   }
 
-  // Otherwise line comment
-  if (valid[LINE_COMMENT]) {
-    scan_line_comment_after_dashes(lx);
-    lx->result_symbol = LINE_COMMENT;
-    return true;
-  }
-
-  // If LINE_COMMENT isn't valid, we must still make progress; treat as line comment anyway.
-  scan_line_comment_after_dashes(lx);
-  lx->result_symbol = LINE_COMMENT;
-  return true;
-}
-
-/* ===== main scan ===== */
-
-bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid) {
-  (void)payload;
-
-  // If you want comments recognized after indentation, keep this enabled.
-  // It is safe because comments are in extras.
-  skip_whitespaces(lx);
-
-  // Comments (extras) — single-token
-  if ((valid[LINE_COMMENT] || valid[LONG_COMMENT]) && lx->lookahead == '-') {
-    if (scan_comment(lx, valid)) return true;
-  }
-
-  // Lua code block tokens
-  if (valid[LUACODE_END] && scan_luacode_end(lx)) {
-    lx->result_symbol = LUACODE_END;
-    return true;
-  }
-  if (valid[LUACODE_PAYLOAD] && scan_luacode_payload(lx)) {
-    lx->result_symbol = LUACODE_PAYLOAD;
-    return true;
-  }
-  if (valid[LUACODE_START] && scan_luacode_start(lx)) {
-    lx->result_symbol = LUACODE_START;
+  // Line comment
+  if (valid_symbols[LINE_COMMENT]) {
+    while (lx->lookahead != 0 && lx->lookahead != '\n') {
+      advance(lx);
+    }
+    *out_sym = LINE_COMMENT;
     return true;
   }
 
   return false;
+}
+
+void *tree_sitter_vesti_external_scanner_create(void) {
+  ScannerState *st = (ScannerState *)calloc(1, sizeof(ScannerState));
+  st->in_luacode = false;
+  return st;
+}
+
+void tree_sitter_vesti_external_scanner_destroy(void *payload) {
+  free(payload);
+}
+
+unsigned tree_sitter_vesti_external_scanner_serialize(void *payload, char *buffer) {
+  ScannerState *st = (ScannerState *)payload;
+  buffer[0] = st->in_luacode ? 1 : 0;
+  return 1;
+}
+
+void tree_sitter_vesti_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
+  ScannerState *st = (ScannerState *)payload;
+  st->in_luacode = (length > 0 && buffer[0] == 1);
+}
+
+bool tree_sitter_vesti_external_scanner_scan(void *payload, TSLexer *lx, const bool *valid_symbols) {
+  ScannerState *st = (ScannerState *)payload;
+
+  // Usually safe: skip whitespace for externals
+  skip_whitespace(lx);
+
+  // Comments (often in extras)
+  if (lx->lookahead == '-' && (valid_symbols[LINE_COMMENT] || valid_symbols[LONG_COMMENT])) {
+    enum TokenType sym;
+    if (scan_lua_comment(lx, valid_symbols, &sym)) {
+      lx->result_symbol = sym;
+      return true;
+    }
+  }
+
+  if (st->in_luacode) {
+    // Critical: END must be attempted before PAYLOAD.
+    if (valid_symbols[LUACODE_END] && scan_luacode_end(lx)) {
+      lx->result_symbol = LUACODE_END;
+      st->in_luacode = false;
+      return true;
+    }
+
+    if (valid_symbols[LUACODE_PAYLOAD]) {
+      // Greedy payload; returns false if it can't consume anything.
+      if (scan_luacode_payload(lx)) {
+        lx->result_symbol = LUACODE_PAYLOAD;
+        return true;
+      }
+    }
+
+    return false;
+  } else {
+    if (valid_symbols[LUACODE_START] && scan_luacode_start(lx)) {
+      lx->result_symbol = LUACODE_START;
+      st->in_luacode = true;
+      return true;
+    }
+    return false;
+  }
 }
 

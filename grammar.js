@@ -149,13 +149,10 @@ module.exports = grammar({
     display_math: ($) => seq("$$", repeat(/[^$]/), "$$"),
     text: ($) =>
       prec.right(
-        repeat1(
-          choice($.word, $.delimiter, $.subscript, $.percent, $.superscript),
-        ),
+        repeat1(choice($.word, $.delimiter, $.subscript, $.superscript)),
       ), //word: ($) => /[^\s\\%\{\}\$\[\]\(\)\#&_\^]+/,
-    word: ($) => /[^\s\\%\{\}\$\#&_\^]+/,
+    word: ($) => /[^\s\\\{\}\$\#&_\^]+/,
     delimiter: ($) => /&/,
-    percent: ($) => /%/,
     subscript: ($) =>
       seq("_", choice($.brace_group, $.letter, $.latex_function)),
     superscript: ($) =>
@@ -163,7 +160,7 @@ module.exports = grammar({
     latex_function: ($) =>
       prec.right(seq($.latex_function_name, repeat($.brace_group))),
     latex_function_name: ($) => /\\([^\r\n]|[@a-zA-Z]+\*?)?/,
-    letter: ($) => /[^\\%\{\}\$\#_\^]/,
+    letter: ($) => /[^\\\{\}\$\#_\^]/,
     digit: ($) => /[0-9]/,
     ascii_letter: ($) => /[A-Za-z]/,
     filepath: ($) => token(/[\p{L}@/\.\-_]+/),
