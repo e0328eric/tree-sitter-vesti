@@ -14,9 +14,11 @@ module.exports = grammar({
     $.luacode_start,
     $.luacode_payload,
     $.luacode_end,
-    $.comment,
+    $.long_comment_start,
+    $.long_comment_payload,
+    $.long_comment_end,
   ],
-  extras: ($) => [/\s/, $.comment],
+  extras: ($) => [/\s/, $.line_comment, $.long_comment],
   rules: {
     vesti_content: ($) => repeat1($._statement),
     _statement: ($) =>
@@ -166,5 +168,8 @@ module.exports = grammar({
     env_name: ($) => token(/[A-Za-z][A-Za-z0-9-]*(\*)*/),
     singleline_raw_latex: ($) => /%#\n|%#[^\n]*\n/, // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     multiline_raw_latex: (_) => token(seq("%-", /[^-]*-+([^%-][^-]*-+)*/, "%")), // Comments // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    line_comment: (_) => token(seq("--", /[^\n]*/, /\r?\n/)),
+    long_comment: ($) =>
+      seq($.long_comment_start, $.long_comment_content, $.long_comment_end),
   },
 });
