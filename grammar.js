@@ -165,7 +165,7 @@ module.exports = grammar({
       token(
         choice(
           seq("--*", /[^*]*\*+([^*-][^*]*\*+)*/, "--"),
-          seq("--", /[^\n]*/, choice("\n", "\r\n", "\r", /\z/))
+          seq("--", /[^\n]*/, choice("\n", "\r\n", "\r"))
         )
     ),
   },
