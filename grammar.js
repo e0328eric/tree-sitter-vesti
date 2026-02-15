@@ -170,7 +170,10 @@ module.exports = grammar({
     multiline_raw_latex: (_) => token(seq("%-", /[^-]*-+([^%-][^-]*-+)*/, "%")), // Comments // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     comment: ($) =>
       choice(
-        seq("--", /[^\n]*/, /\r?\n/),
+        // single-line: -- ... newline
+        token(seq("--", /[^\n]*/, /\r?\n/)),
+
+        // long: --[=*[ ... ]=*]
         seq($.long_comment_start, $.long_comment_payload, $.long_comment_end),
       ),
   },
