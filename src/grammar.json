@@ -38,10 +38,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "getfp_decl"
-        },
-        {
-          "type": "SYMBOL",
           "name": "compile_type_decl"
         },
         {
@@ -70,27 +66,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "KEYWORD_useltx3"
-        },
-        {
-          "type": "SYMBOL",
           "name": "KEYWORD_startdoc"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_makeatletter"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_makeatother"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_ltx3on"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "KEYWORD_ltx3off"
         },
         {
           "type": "SYMBOL",
@@ -393,31 +369,6 @@
         ]
       }
     },
-    "getfp_decl": {
-      "type": "PREC_RIGHT",
-      "value": 2,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "KEYWORD_getfp"
-          },
-          {
-            "type": "STRING",
-            "value": "("
-          },
-          {
-            "type": "SYMBOL",
-            "name": "filepath"
-          },
-          {
-            "type": "STRING",
-            "value": ")"
-          }
-        ]
-      }
-    },
     "compile_type_decl": {
       "type": "PREC_RIGHT",
       "value": 2,
@@ -682,20 +633,6 @@
         "value": "importves"
       }
     },
-    "KEYWORD_useltx3": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "useltx3"
-      }
-    },
-    "KEYWORD_getfp": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "getfp"
-      }
-    },
     "KEYWORD_startdoc": {
       "type": "TOKEN",
       "content": {
@@ -736,34 +673,6 @@
       "content": {
         "type": "STRING",
         "value": "defenv"
-      }
-    },
-    "KEYWORD_makeatletter": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "makeatletter"
-      }
-    },
-    "KEYWORD_makeatother": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "makeatother"
-      }
-    },
-    "KEYWORD_ltx3on": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "ltx3on"
-      }
-    },
-    "KEYWORD_ltx3off": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "ltx3off"
       }
     },
     "KEYWORD_compty": {

@@ -185,25 +185,6 @@
     }
   },
   {
-    "type": "getfp_decl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "KEYWORD_getfp",
-          "named": true
-        },
-        {
-          "type": "filepath",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "importmod_decl",
     "named": true,
     "fields": {},
@@ -473,27 +454,7 @@
           "named": true
         },
         {
-          "type": "KEYWORD_ltx3off",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_ltx3on",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_makeatletter",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_makeatother",
-          "named": true
-        },
-        {
           "type": "KEYWORD_startdoc",
-          "named": true
-        },
-        {
-          "type": "KEYWORD_useltx3",
           "named": true
         },
         {
@@ -530,10 +491,6 @@
         },
         {
           "type": "docclass_decl",
-          "named": true
-        },
-        {
-          "type": "getfp_decl",
           "named": true
         },
         {
@@ -632,10 +589,6 @@
     "named": true
   },
   {
-    "type": "KEYWORD_getfp",
-    "named": true
-  },
-  {
     "type": "KEYWORD_importmod",
     "named": true
   },
@@ -648,31 +601,11 @@
     "named": true
   },
   {
-    "type": "KEYWORD_ltx3off",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_ltx3on",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_makeatletter",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_makeatother",
-    "named": true
-  },
-  {
     "type": "KEYWORD_startdoc",
     "named": true
   },
   {
     "type": "KEYWORD_useenv",
-    "named": true
-  },
-  {
-    "type": "KEYWORD_useltx3",
     "named": true
   },
   {

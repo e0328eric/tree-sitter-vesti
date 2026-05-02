@@ -28,7 +28,6 @@ module.exports = grammar({
         $.importmod_decl,
         $.copyfile_decl,
         $.importves_decl,
-        $.getfp_decl,
         $.compile_type_decl,
         $.useenv_decl,
         $.begenv_decl,
@@ -36,12 +35,7 @@ module.exports = grammar({
         $.defun_decl,
         $.defenv_decl,
         $.luacode_block,
-        $.KEYWORD_useltx3,
         $.KEYWORD_startdoc,
-        $.KEYWORD_makeatletter,
-        $.KEYWORD_makeatother,
-        $.KEYWORD_ltx3on,
-        $.KEYWORD_ltx3off,
         $.attributes,
         $.singleline_raw_latex,
         $.multiline_raw_latex,
@@ -80,8 +74,6 @@ module.exports = grammar({
       prec.right(2, seq($.KEYWORD_copyfile, "(", $.filepath, ")")),
     importves_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
-    getfp_decl: ($) =>
-      prec.right(2, seq($.KEYWORD_getfp, "(", $.filepath, ")")),
     compile_type_decl: ($) =>
       prec.right(2, seq($.KEYWORD_compty, "(", $.filepath, ")")),
     useenv_decl: ($) =>
@@ -125,18 +117,12 @@ module.exports = grammar({
     KEYWORD_importmod: ($) => token("importmod"),
     KEYWORD_copyfile: ($) => token("cpfile"),
     KEYWORD_importves: ($) => token("importves"),
-    KEYWORD_useltx3: ($) => token("useltx3"),
-    KEYWORD_getfp: ($) => token("getfp"),
     KEYWORD_startdoc: ($) => token("startdoc"),
     KEYWORD_useenv: ($) => token("useenv"),
     KEYWORD_begenv: ($) => token("begenv"),
     KEYWORD_endenv: ($) => token("endenv"),
     KEYWORD_defun: ($) => token("defun"),
     KEYWORD_defenv: ($) => token("defenv"),
-    KEYWORD_makeatletter: ($) => token("makeatletter"),
-    KEYWORD_makeatother: ($) => token("makeatother"),
-    KEYWORD_ltx3on: ($) => token("ltx3on"),
-    KEYWORD_ltx3off: ($) => token("ltx3off"),
     KEYWORD_compty: ($) => token("compty"),
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),
