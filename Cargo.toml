@@ -1,13 +1,13 @@
 [package]
 name = "tree-sitter-vesti"
 description = "tree-sitter parser for vesti"
-version = "14.0.0"
+version = "15.0.0"
 authors = ["Sungbae Jeong <almagest0328@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "vesti"]
 categories = ["parser-implementations", "parsing", "text-editors"]
-repository = "https://github.com/e0328eric/vesti"
+repository = "https://codeberg.org/e0328eric/vesti"
 edition = "2021"
 autoexamples = false
 
@@ -31,4 +31,4 @@ tree-sitter-language = "0.1"
 cc = "1.2"
 
 [dev-dependencies]
-tree-sitter = "0.25.2"
+tree-sitter = "0.26.9"

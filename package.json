@@ -1,8 +1,8 @@
 {
   "name": "tree-sitter-vesti",
-  "version": "14.0.0",
+  "version": "15.0.0",
   "description": "tree-sitter parser for vesti",
-  "repository": "https://github.com/e0328eric/vesti",
+  "repository": "https://codeberg.org/e0328eric/vesti",
   "license": "MIT",
   "author": {
     "name": "Sungbae Jeong",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "prebuildify": "^6.0.1",
-    "tree-sitter-cli": "^0.25.2"
+    "tree-sitter-cli": "^0.26.9"
   },
   "peerDependencies": {
     "tree-sitter": "^0.21.1"

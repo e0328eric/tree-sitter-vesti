@@ -30,15 +30,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "copyfile_decl"
-        },
-        {
-          "type": "SYMBOL",
           "name": "importves_decl"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "compile_type_decl"
         },
         {
           "type": "SYMBOL",
@@ -319,31 +311,6 @@
         ]
       }
     },
-    "copyfile_decl": {
-      "type": "PREC_RIGHT",
-      "value": 2,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "KEYWORD_copyfile"
-          },
-          {
-            "type": "STRING",
-            "value": "("
-          },
-          {
-            "type": "SYMBOL",
-            "name": "filepath"
-          },
-          {
-            "type": "STRING",
-            "value": ")"
-          }
-        ]
-      }
-    },
     "importves_decl": {
       "type": "PREC_RIGHT",
       "value": 2,
@@ -353,31 +320,6 @@
           {
             "type": "SYMBOL",
             "name": "KEYWORD_importves"
-          },
-          {
-            "type": "STRING",
-            "value": "("
-          },
-          {
-            "type": "SYMBOL",
-            "name": "filepath"
-          },
-          {
-            "type": "STRING",
-            "value": ")"
-          }
-        ]
-      }
-    },
-    "compile_type_decl": {
-      "type": "PREC_RIGHT",
-      "value": 2,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "KEYWORD_compty"
           },
           {
             "type": "STRING",
@@ -619,13 +561,6 @@
         "value": "importmod"
       }
     },
-    "KEYWORD_copyfile": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "cpfile"
-      }
-    },
     "KEYWORD_importves": {
       "type": "TOKEN",
       "content": {
@@ -673,13 +608,6 @@
       "content": {
         "type": "STRING",
         "value": "defenv"
-      }
-    },
-    "KEYWORD_compty": {
-      "type": "TOKEN",
-      "content": {
-        "type": "STRING",
-        "value": "compty"
       }
     },
     "compile_type": {

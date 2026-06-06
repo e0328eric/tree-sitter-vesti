@@ -4,7 +4,6 @@
 ((KEYWORD_docclass) @keyword)
 ((KEYWORD_importpkg) @keyword)
 ((KEYWORD_importmod) @keyword)
-((KEYWORD_copyfile) @keyword)
 ((KEYWORD_importves) @keyword)
 ((KEYWORD_startdoc) @keyword)
 ((KEYWORD_useenv) @keyword)
@@ -12,7 +11,6 @@
 ((KEYWORD_endenv) @keyword)
 ((KEYWORD_defun) @keyword)
 ((KEYWORD_defenv) @keyword)
-((KEYWORD_compty) @keyword)
 
 ((luacode_start) @type)
 ((luacode_end) @type)

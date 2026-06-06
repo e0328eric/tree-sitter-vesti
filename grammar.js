@@ -26,9 +26,7 @@ module.exports = grammar({
         $.singlepkg_decl,
         $.multipkg_decl,
         $.importmod_decl,
-        $.copyfile_decl,
         $.importves_decl,
-        $.compile_type_decl,
         $.useenv_decl,
         $.begenv_decl,
         $.KEYWORD_endenv,
@@ -70,12 +68,8 @@ module.exports = grammar({
     option_name: ($) => /([^,()]|\\,|\\(|\\))+/,
     importmod_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importmod, "(", $.filepath, ")")),
-    copyfile_decl: ($) =>
-      prec.right(2, seq($.KEYWORD_copyfile, "(", $.filepath, ")")),
     importves_decl: ($) =>
       prec.right(2, seq($.KEYWORD_importves, "(", $.filepath, ")")),
-    compile_type_decl: ($) =>
-      prec.right(2, seq($.KEYWORD_compty, "(", $.filepath, ")")),
     useenv_decl: ($) =>
       prec.right(
         1,
@@ -115,7 +109,6 @@ module.exports = grammar({
     KEYWORD_docclass: ($) => token("docclass"),
     KEYWORD_importpkg: ($) => token("importpkg"),
     KEYWORD_importmod: ($) => token("importmod"),
-    KEYWORD_copyfile: ($) => token("cpfile"),
     KEYWORD_importves: ($) => token("importves"),
     KEYWORD_startdoc: ($) => token("startdoc"),
     KEYWORD_useenv: ($) => token("useenv"),
@@ -123,7 +116,6 @@ module.exports = grammar({
     KEYWORD_endenv: ($) => token("endenv"),
     KEYWORD_defun: ($) => token("defun"),
     KEYWORD_defenv: ($) => token("defenv"),
-    KEYWORD_compty: ($) => token("compty"),
     compile_type: ($) =>
       choice(token("plain"), token("pdf"), token("xe"), token("lua")),
     // NOTE: stolen from https://github.com/latex-lsp/tree-sitter-latex/blob/master/grammar.js
